@@ -1,6 +1,14 @@
 Main functionality:
-1. File viewer
-
+1. File viewer - lets user (team lead) select folder to grab files from (raws)
 2. Display photos
-
+ - convert dng to jpeg/pdf/other small format
+ - display in a column
+ - group photos (either highlighted or drag/drop)
+ - commit button
 3. Rename files
+ - as groups are being assigned, count group number and append to file name (assign to local variable until commit)
+4. Commit
+ - show grouped and renamed files
+ - notify if files are ungrouped
+ - final commit button
+ - rename files
