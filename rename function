@@ -1,0 +1,13 @@
+#takes in the name of a file and adds a hyphen and the group number to it
+def rename_file(file_name, group_num):
+    if file_name.endswith('.dng'):
+        file_new_name = file_name[:len(file_name)-4] + '-' + str(group_num) + '.dng'
+        
+        #prints original name and new name
+        #print(file_name + '\n' + file_new_name)
+        
+        #renames file
+        os.rename(file_name, file_new_name)
+    else:
+        #error message
+        print("File is not of type dng")
