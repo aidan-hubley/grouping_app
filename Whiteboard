@@ -11,4 +11,6 @@ Main functionality:
  - show grouped and renamed files
  - notify if files are ungrouped
  - final commit button
- - rename files
+ - rename files 
+    rename_file(file_name, group_num)
+    - takes in file name and group number and renames file with group num appended
