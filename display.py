@@ -30,7 +30,7 @@ def open_folder():
     # Load and display the images
     for i in range(len(image_files)):
         image = Image.open(os.path.join(folder_path, image_files[i]))
-        image = image.resize((250, 250), Image.ANTIALIAS)
+        image = image.resize((250, 250), Image.LANCZOS)
         image = ImageTk.PhotoImage(image)
         label = Label(images_inner_frame, image=image, bg='white')
         label.image = image

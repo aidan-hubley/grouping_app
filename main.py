@@ -6,7 +6,7 @@ import glob
 
 main = Tk()
 
-image1 = PhotoImage(file='C:/Users/gltig/OneDrive/Pictures/Saved Pictures/Stuff.png')
+image1 = PhotoImage(file='./house.png')
 updated_image = image1.subsample(3, 3)
 
 folder_path = None
@@ -39,7 +39,7 @@ if folder_path is None:
     folder_button.grid(row=1, column=0)
 else:
     filelist = glob.glob(folder_path + '/*.dng')
-    for file in filelist:
+    #for file in filelist:
         #convert dng to jpg
         #display
     #grouping
