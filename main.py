@@ -1,49 +1,73 @@
-#@author Joshua Phillips
-#with help from Aidan Hubley
-#Stackoverflow users referenced : John1024,
-from tkinter import filedialog, Label, Button, PhotoImage, Tk
-import glob
+from tkinter import filedialog
+from tkinter import *
+from tkinter.ttk import *
 
-main = Tk()
+# ______________________________________________________________________________________________________________________
+# Phase 3: Review Groups
+# ______________________________________________________________________________________________________________________
 
-image1 = PhotoImage(file='./house.png')
-updated_image = image1.subsample(3, 3)
+def open_review():
+    grouping.destroy()
+    review = Tk()
+    review.title("Review Page")
+    review.geometry("500x700")
 
-folder_path = None
+    review.mainloop()
 
-def file_select():
+# ______________________________________________________________________________________________________________________
+# Phase 2: Group Photos
+# ______________________________________________________________________________________________________________________
+
+def landing_page_rerun():
+    grouping.destroy()
+    landing_page()
+
+def open_grouping():
+    global grouping
+    grouping = Tk()
+    grouping.title("Grouping Page")
+
+    # Make Grouping Page Fullscreen
+    # width = grouping.winfo_screenwidth()
+    # height = grouping.winfo_screenheight()
+    # grouping.geometry("%dx%d" % (width, height))
+    grouping.geometry("500x500")
+
+    # Grouping Page
+    reselect = Button(grouping, text="Reselect Groups", command=landing_page_rerun)
+    reselect.place(relx=.08, rely=.07, anchor=NW)
+    group_photos = Button(grouping, text="Group Photos")
+    group_photos.place(relx=.5, rely=.07, anchor=N)
+    review_groups = Button(grouping, text="Review Groups", command=open_review)
+    review_groups.place(relx=.92, rely=.07, anchor=NE)
+
+    grouping.mainloop()
+
+# ______________________________________________________________________________________________________________________
+# Phase 1: Landing Page
+# ______________________________________________________________________________________________________________________
+
+# Select Folder from directory
+def select_folder():
     global folder_path
     folder_path = filedialog.askdirectory()
     print(folder_path)
-    image_label = Label(main, image=updated_image)
-    image_label.pack()
+    landing.destroy()
+    open_grouping()
 
+def landing_page():
+    # Landing Page Creation
+    global landing
+    landing = Tk()
+    landing.title("Landing Page")
+    landing.geometry("250x250")
 
-def rename_file(file_name, group_num):
-    if file_name.endswith('.dng'):
-        file_new_name = file_name[:len(file_name)-4] + '-' + str(group_num) + '.dng'
-        print(file_name + '\n' + file_new_name)
-        #uncomment when ready to implement:
-        # os.rename(file_name, file_new_name)
-    else:
-        print("File is not of type dng")
+    hi = Label(landing, text="Welcome", font=(10))
+    hi.place(relx=0.5, rely=0.3, anchor=CENTER)
+    select = Button(landing, text="Select Folder", command=select_folder)
+    select.place(relx=0.5, rely=0.6, anchor=CENTER)
+    landing.mainloop()
 
+landing_page()
 
-folder_label = Label(main, text = "Select a Folder")
-
-folder_button = Button(main, text="Open File Explorer", command=file_select,
-                 padx = 50, pady = 20, bg="grey", fg="blue", highlightbackground="black")
-
-if folder_path is None:
-    folder_label.grid(row=0, column=0)
-    folder_button.grid(row=1, column=0)
-else:
-    filelist = glob.glob(folder_path + '/*.dng')
-    #for file in filelist:
-        #convert dng to jpg
-        #display
-    #grouping
-
-#print(rename_file('input.dg', 1))
-
-main.mainloop()
+# ______________________________________________________________________________________________________________________
