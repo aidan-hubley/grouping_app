@@ -1,6 +1,8 @@
+import os
 from tkinter import filedialog
 from tkinter import *
 from tkinter.ttk import *
+from PIL import Image, ImageTk
 
 # ______________________________________________________________________________________________________________________
 # Phase 4: Final Page
@@ -63,7 +65,7 @@ def open_grouping():
     global grouping
     grouping = Tk()
     grouping.title("Grouping Page")
-    grouping.geometry("1150x700")
+    grouping.geometry("1200x700")
 
     # Buttons
     reselect = Button(grouping, text="< Reselect Folder", command=landing_page_rerun)
@@ -79,11 +81,24 @@ def open_grouping():
     grouped_label = Label(grouping, text="Grouped Photos", font=(20))
     grouped_label.place(relx=.8, rely=.1, anchor=NE)
 
-    # Raw Frame
-    raw_frame = Frame(grouping, bg="lightgrey")
-    raw_frame.place()
+    # Raw Canvas
+    raw_canvas = Canvas(grouping, bd="3", bg="lightgrey", height=520, width=500)
+    raw_canvas.place(relx=.025, rely=.2, anchor=NW)
 
+    # Images in Raw Canvas
+    house1 = Image.open("house.jpg")
+    temp_house1 = house1.resize((235, 145), Image.LANCZOS)
+    re_house1 = ImageTk.PhotoImage(temp_house1)
+    raw_canvas.create_image(10, 10, anchor=NW, image=re_house1)
 
+    house2 = Image.open("house.png")
+    temp_house2 = house2.resize((235, 145), Image.LANCZOS)
+    re_house2 = ImageTk.PhotoImage(temp_house2)
+    raw_canvas.create_image(255, 10, anchor=NW, image=re_house2)
+
+    # Grouped Canvas
+    grouped_canvas = Canvas(grouping, bd="3", bg="lightgrey", height=520, width=500)
+    grouped_canvas.place(relx=.975, rely=.2, anchor=NE)
 
     grouping.mainloop()
 
@@ -95,6 +110,8 @@ def open_grouping():
 def select_folder():
     global folder_path
     folder_path = filedialog.askdirectory()
+    global image_files
+    image_files = [f for f in os.listdir(folder_path) if f.endswith(".jpg") or f.endswith(".png")]
     print(folder_path)
     landing.destroy()
     open_grouping()

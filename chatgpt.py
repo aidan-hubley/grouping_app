@@ -32,7 +32,7 @@ def show_images(image_list):
 
 
 # Example image list
-image_list = ["house.jpg", "house.jpg", "house.jpg", "house.jpg", "house.jpg"]
+image_list = ["house.jpg", "house.png", "house.jpg", "house.jpg", "house.jpg"]
 
 root = Tk()
 root.title("Image Viewer")
