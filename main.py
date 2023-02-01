@@ -84,6 +84,16 @@ def open_grouping():
     # Raw Canvas
     raw_canvas = Canvas(grouping, bd="3", bg="lightgrey", height=520, width=500)
     raw_canvas.place(relx=.025, rely=.2, anchor=NW)
+    raw_canvas.config(scrollregion=[0, 0, 500, 1000])
+
+    # Raw Canvas Scrolling Function
+    raw_canvas.yview_moveto(1.0)
+
+    # Raw Canvas Scrollbar
+    ybar = Scrollbar(raw_canvas, orient=VERTICAL)
+    ybar.place(side=LEFT, fill=Y)
+    ybar.config(command=raw_canvas.yview)
+    raw_canvas.config(yscrollcommand=ybar.set)
 
     # Images in Raw Canvas
     house1 = Image.open("house.jpg")
@@ -97,7 +107,7 @@ def open_grouping():
     raw_canvas.create_image(255, 10, anchor=NW, image=re_house2)
 
     # Grouped Canvas
-    grouped_canvas = Canvas(grouping, bd="3", bg="lightgrey", height=520, width=500)
+    grouped_canvas = Canvas(grouping, bd="3", bg="lightgrey", width=500, height=520)
     grouped_canvas.place(relx=.975, rely=.2, anchor=NE)
 
     grouping.mainloop()
