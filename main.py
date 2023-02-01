@@ -91,7 +91,7 @@ def open_grouping():
 
     # Raw Canvas Scrollbar
     ybar = Scrollbar(raw_canvas, orient=VERTICAL)
-    ybar.place(side=LEFT, fill=Y)
+    ybar.place(relx=0, rely=0, height=520, anchor = NW)
     ybar.config(command=raw_canvas.yview)
     raw_canvas.config(yscrollcommand=ybar.set)
 
