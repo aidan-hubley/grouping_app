@@ -77,6 +77,29 @@ def landing_page_rerun():
     grouping.destroy()
     open_landing()
 
+def on_image_click(event):
+    image = event.widget
+    # Add or remove the label from the selection
+    if image in selected:
+        image.configure(borderwidth=2, relief="transparent", bordercolor="white")
+        selected.remove(image)
+    else:
+        image.configure(borderwidth=2, relief="solid", bordercolor="blue")
+        selected.append(image)
+
+def create_group():
+    if selected != []:
+        group = []
+        for image in selected:
+            group.append(image)
+
+        groups.append(group)
+    else:
+        # error
+        print("No images selected")
+
+
+
 def open_grouping():
     global grouping
     grouping = Tk()
@@ -112,15 +135,26 @@ def open_grouping():
     raw_canvas.config(yscrollcommand=ybar.set)
 
     # Images in Raw Canvas
-    house1 = Image.open("house.jpg")
-    temp_house1 = house1.resize((235, 145), Image.LANCZOS)
-    re_house1 = ImageTk.PhotoImage(temp_house1)
-    raw_canvas.create_image(20, 10, anchor=NW, image=re_house1)
+    # house1 = Image.open("house.jpg")
+    # temp_house1 = house1.resize((235, 145), Image.LANCZOS)
+    # re_house1 = ImageTk.PhotoImage(temp_house1)
+    # raw_canvas.create_image(20, 10, anchor=NW, image=re_house1)
+    #
+    # house2 = Image.open("house.png")
+    # temp_house2 = house2.resize((235, 145), Image.LANCZOS)
+    # re_house2 = ImageTk.PhotoImage(temp_house2)
+    # raw_canvas.create_image(265, 10, anchor=NW, image=re_house2)
 
-    house2 = Image.open("house.png")
-    temp_house2 = house2.resize((235, 145), Image.LANCZOS)
-    re_house2 = ImageTk.PhotoImage(temp_house2)
-    raw_canvas.create_image(265, 10, anchor=NW, image=re_house2)
+    # Load and display the images
+    # for i in range(len(image_files)):
+    #     print(len(image_files))
+    #     image = Image.open(os.path.join(folder_path, image_files[i]))
+    #     image = image.resize((235, 145), Image.LANCZOS)
+    #     image = ImageTk.PhotoImage(image)
+    #     label = Label(raw_canvas, image=image)
+    #     label.image = image
+    #     label.place(raw_canvas, i*245+20, 10, anchor=NW, image=label)
+    #     image.bind("<Button-1>", on_image_click)
 
     # Grouped Canvas
     global grouped_canvas
@@ -167,8 +201,8 @@ def select_folder():
     global folder_path
     folder_path = filedialog.askdirectory()
     global image_files
-    image_files = [f for f in os.listdir(folder_path) if f.endswith(".jpg") or f.endswith(".png")]
-    print(folder_path)
+    image_files = [f for f in os.listdir(folder_path) if f.endswith(".jpg") or f.endswith(".png")]  # change to dng
+    print(folder_path, image_files)
     landing.destroy()
     open_grouping()
 
@@ -184,6 +218,12 @@ def open_landing():
     select.place(relx=0.5, rely=0.6, anchor=CENTER)
     landing.mainloop()
 
+# ______________________________________________________________________________________________________________________
+# Phase 0: Global Variables
+# ______________________________________________________________________________________________________________________
+
+selected = []
+groups = []
 open_landing()
 
 # ______________________________________________________________________________________________________________________

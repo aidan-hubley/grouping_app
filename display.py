@@ -35,7 +35,7 @@ def open_folder():
         label = Label(images_inner_frame, image=image, bg='white')
         label.image = image
         label.pack()
-        label.bind("<Button-1>", on_label_click)
+        image.bind("<Button-1>", on_label_click)
 
 
 def on_label_click(event):
