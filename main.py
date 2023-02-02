@@ -146,15 +146,15 @@ def open_grouping():
     # raw_canvas.create_image(265, 10, anchor=NW, image=re_house2)
 
     # Load and display the images
-    # for i in range(len(image_files)):
-    #     print(len(image_files))
-    #     image = Image.open(os.path.join(folder_path, image_files[i]))
-    #     image = image.resize((235, 145), Image.LANCZOS)
-    #     image = ImageTk.PhotoImage(image)
-    #     label = Label(raw_canvas, image=image)
-    #     label.image = image
-    #     label.place(raw_canvas, i*245+20, 10, anchor=NW, image=label)
-    #     image.bind("<Button-1>", on_image_click)
+    for i in range(len(image_files)):
+        print(len(image_files))
+        image = Image.open(os.path.join(folder_path, image_files[i]))
+        image = image.resize((235, 145), Image.LANCZOS)
+        image = ImageTk.PhotoImage(image)
+        label = Label(raw_canvas, image=image, background="white")
+        # label.image = image
+        raw_canvas.place(image, relx=i*245+20, rely=10, anchor=NW)
+        image.bind("<Button-1>", on_image_click)
 
     # Grouped Canvas
     global grouped_canvas
