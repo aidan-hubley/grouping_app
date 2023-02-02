@@ -103,7 +103,7 @@ def open_grouping():
     raw_canvas.config(scrollregion=[0, 0, 500, 1000])
 
     # Raw Canvas Scrolling Function
-    raw_canvas.yview_moveto(1.0)
+    raw_canvas.yview_moveto(0)
 
     # Raw Canvas Scrollbar
     ybar = Scrollbar(raw_canvas, orient=VERTICAL)
@@ -123,12 +123,14 @@ def open_grouping():
     raw_canvas.create_image(265, 10, anchor=NW, image=re_house2)
 
     # Grouped Canvas
+    global grouped_canvas
     grouped_canvas = Canvas(grouping, bd="3", bg="lightgrey", height=520, width=510)
     grouped_canvas.place(relx=.975, rely=.2, anchor=NE)
-    grouped_canvas.config(scrollregion=[0, 0, 500, 1000])
+    grouped_canvas.config(scrollregion=[0, 0, 570, 1000])
 
     # Raw Canvas Scrolling Function
-    grouped_canvas.yview_moveto(1.0)
+    grouped_canvas.yview_moveto(0)
+    grouped_canvas.xview_moveto(0)
 
     # Raw Canvas Scrollbar
     ybar = Scrollbar(grouped_canvas, orient=VERTICAL)
@@ -136,7 +138,25 @@ def open_grouping():
     ybar.config(command=grouped_canvas.yview)
     grouped_canvas.config(yscrollcommand=ybar.set)
 
+    xbar = Scrollbar(grouped_canvas, orient=HORIZONTAL)
+    xbar.place(relx=1, rely=1, width=505, anchor=SE)
+    xbar.config(command=grouped_canvas.xview)
+    grouped_canvas.config(xscrollcommand=xbar.set)
+
+    # for i in range(len(groups)):
+    #     display_new_group(i)
+
+    display_new_group(1)
+
     grouping.mainloop()
+
+def display_new_group(num):
+    group = "Group " + str(num)
+    grouped_canvas.create_text(35, 60, text=group)
+    grouped_canvas.create_rectangle(60, 5, 225, 115, width=1)
+    grouped_canvas.create_rectangle(230, 5, 395, 115, width=1)
+    grouped_canvas.create_rectangle(400, 5, 565, 115, width=1)
+    grouped_canvas.create_line(0, 120, 570, 120)
 
 # ______________________________________________________________________________________________________________________
 # Phase 1: Landing Page
