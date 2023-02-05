@@ -14,6 +14,8 @@ def open_final():
     final = Tk()
     final.title("Final Page")
     final.geometry("250x250")
+    final.maxsize(250, 250)
+    final.minsize(250, 250)
 
     saved = Label(final, text="Grouped Saved!", font=(10))
     saved.place(relx=0.5, rely=0.3, anchor=CENTER)
@@ -40,6 +42,8 @@ def open_review():
     review = Tk()
     review.title("Review Page")
     review.geometry("500x700")
+    review.maxsize(500, 700)
+    review.minsize(500, 700)
 
     # Buttons + Label
     reselect = Button(review, text="< Reselect Groups", command=grouping_page_rerun)
@@ -143,6 +147,8 @@ def open_grouping():
     grouping = Tk()
     grouping.title("Grouping Page")
     grouping.geometry("1200x700")
+    grouping.maxsize(1200, 700)
+    grouping.minsize(1200, 700)
 
     # Buttons
     reselect = Button(grouping, text="< Reselect Folder", command=lambda: select_folder(grouping))
@@ -263,6 +269,8 @@ def open_landing():
     landing = Tk()
     landing.title("Landing Page")
     landing.geometry("250x250")
+    landing.maxsize(250, 250)
+    landing.minsize(250, 250)
 
     hi = Label(landing, text="Welcome", font=(10))
     hi.place(relx=0.5, rely=0.3, anchor=CENTER)
