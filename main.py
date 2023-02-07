@@ -57,10 +57,18 @@ def open_review():
         grouped_label = Label(review, text="Review Groups", font=20)
         grouped_label.place(relx=.5, rely=.1, anchor=CENTER)
 
+        # Display Groups
+        height = 110
+        width = 165
+        pad = 5
+
         # Canvas
         review_canvas = Canvas(review, bd="3", bg="lightgrey", height=580, width=600)
         review_canvas.place(relx=.5, rely=.55, anchor=CENTER)
-        review_canvas.config(scrollregion=[0, 0, 600, 1000])
+        print(len(groups))
+        review_canvas.config(scrollregion=[0, 0, 600, len(groups)*(height+pad)+pad])
+        #     raw_canvas.config(scrollregion=[0, 0, 500, int(len(image_files)/2)*(height+pad)+pad])
+        # review_canvas.config(scrollregion=[0, 0, 600, 1000])
 
         # Raw Canvas Scrolling Function
         review_canvas.yview_moveto(0)
@@ -70,11 +78,6 @@ def open_review():
         ybar.place(relx=0, rely=0, height=590, anchor=NW)
         ybar.config(command=review_canvas.yview)
         review_canvas.config(yscrollcommand=ybar.set)
-
-        # Display Groups
-        height = 110
-        width = 165
-        pad = 5
 
         global images
         images = []
@@ -189,7 +192,8 @@ def open_grouping():
     ybar.config(command=raw_canvas.yview)
     raw_canvas.config(yscrollcommand=ybar.set)
 
-    images = []
+    global raw_images
+    raw_images = []
     for i in range(len(image_files)):
         images.append(Image.open(os.path.join(folder_path, image_files[i])))
 
@@ -244,13 +248,13 @@ def display_groups():
         group_images = []
         for j in range(len(groups[i])):
             group_images.append(Image.open(os.path.join(folder_path, groups[i][j])))
-        images.append(group_images)
+        grouped_images.append(group_images)
 
     for i in range(len(groups)):
         group_str = "Group " + str(i+1)
         grouped_canvas.create_text(35, 60 + (height + pad * 2) * i, text=group_str)
         grouped_canvas.create_line(0, (height + pad * 2)+(i*(height + pad * 2)), 570, (height + pad * 2)+(i*(height + pad * 2)))
-        group_images = images[i]
+        group_images = grouped_images[i]
         # for j in range(len(groups[i])):
         #     images.append(Image.open(os.path.join(folder_path, groups[i][j])))
 
