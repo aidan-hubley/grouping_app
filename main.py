@@ -2,7 +2,7 @@ import os
 from tkinter import filedialog
 from tkinter import *
 from tkinter.ttk import *
-from PIL import Image, ImageTk
+# from PIL import Image, ImageTk
 
 # ______________________________________________________________________________________________________________________
 # Phase 4: Final Page
@@ -183,16 +183,20 @@ def open_grouping():
     for i in range(len(image_files)):
         images.append(Image.open(os.path.join(folder_path, image_files[i])))
 
+    height = 145
+    width = 235
+    pad = 10
+
     # Load and display the images
     for i in range(len(image_files)):
         print(images[i])
-        images[i] = images[i].resize((235, 145), Image.LANCZOS)
+        images[i] = images[i].resize((width, height), Image.LANCZOS)
         images[i] = ImageTk.PhotoImage(images[i])
         label = Label(raw_canvas, image=images[i])
         # label.bind("<Button-1>", on_image_click)
         label.bind("<Button-1>", lambda event, index=i: on_image_click(index))
-        x_pos = (245 * (i % 2)) + 138  # (118*i)+128
-        y_pos = (155 * (int(i / 2))) + 83  # (73*(i%2))+83
+        x_pos = ((width + pad) * (i % 2)) + 138
+        y_pos = (155 * (int(i / 2))) + 83
         raw_canvas.create_window(x_pos, y_pos, window=label)
 
     # Grouped Canvas
@@ -226,13 +230,21 @@ def display_groups():
     height = 110
     width = 165
     pad = 5
+    images = []
+    for i in range(len(groups)):
+        group_images = []
+        for j in range(len(groups[i])):
+            group_images.append(Image.open(os.path.join(folder_path, groups[i][j])))
+
+        images.append(group_images)
+
     for i in range(len(groups)):
         group_str = "Group " + str(i+1)
         grouped_canvas.create_text(35, 60 + (height * i) + pad, text=group_str)
         grouped_canvas.create_line(0, 120+(i*120), 570, 120+(i*120))
-        images = []
-        for j in range(len(groups[i])):
-            images.append(Image.open(os.path.join(folder_path, groups[i][j])))
+        # images = []
+        # for j in range(len(groups[i])):
+        #     images.append(Image.open(os.path.join(folder_path, groups[i][j])))
 
         for j in range(len(groups[i])):
             images[j] = images[j].resize((width, height), Image.LANCZOS)
