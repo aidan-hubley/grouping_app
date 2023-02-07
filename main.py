@@ -58,15 +58,15 @@ def open_review():
         grouped_label.place(relx=.5, rely=.1, anchor=CENTER)
 
         # Display Groups
-        height = 110
-        width = 165
-        pad = 5
+        review_height = 110
+        review_width = 165
+        review_pad = 5
 
         # Canvas
         review_canvas = Canvas(review, bd="3", bg="lightgrey", height=580, width=600)
         review_canvas.place(relx=.5, rely=.55, anchor=CENTER)
         print(len(groups))
-        review_canvas.config(scrollregion=[0, 0, 600, len(groups)*(height+pad)+pad])
+        review_canvas.config(scrollregion=[0, 0, 600, len(groups)*(review_height+review_pad)+review_pad])
         #     raw_canvas.config(scrollregion=[0, 0, 500, int(len(image_files)/2)*(height+pad)+pad])
         # review_canvas.config(scrollregion=[0, 0, 600, 1000])
 
@@ -79,28 +79,23 @@ def open_review():
         ybar.config(command=review_canvas.yview)
         review_canvas.config(yscrollcommand=ybar.set)
 
-        global images
-        images = []
-        for i in range(len(groups)):
-            global group_images
-            group_images = []
-            for j in range(len(groups[i])):
-                group_images.append(Image.open(os.path.join(folder_path, groups[i][j])))
-            images.append(group_images)
+        global grouped_images
+        fill_grouped_images()
 
         for i in range(len(groups)):
             group_str = "Group " + str(i + 1)
-            review_canvas.create_text(35, 60 + (height + pad * 2) * i, text=group_str)
-            review_canvas.create_line(0, (height + pad * 2) + (i * (height + pad * 2)), 610,
-                                       (height + pad * 2) + (i * (height + pad * 2)))
-            group_images = images[i]
+            review_canvas.create_text(35, 60 + (review_height + review_pad * 2) * i, text=group_str)
+            review_canvas.create_line(0, (review_height + review_pad * 2) + (i * (review_height + review_pad * 2)), 610,
+                                       (review_height + review_pad * 2) + (i * (review_height + review_pad * 2)))
+            group_images = grouped_images[i]
 
             for j in range(len(groups[i])):
-                group_images[j] = group_images[j].resize((width, height), Image.LANCZOS)
+                print(str(group_images[j]))
+                group_images[j] = group_images[j].resize((review_width, review_height), Image.LANCZOS)
                 group_images[j] = ImageTk.PhotoImage(group_images[j])
                 label = Label(review_canvas, image=group_images[j])
-                x_pos = j * (width + pad * 2) + int(width / 2) + pad + 70
-                y_pos = i * (height + pad * 2) + int(height / 2) + pad
+                x_pos = j * (review_width + reviewed_pad * 2) + int(review_width / 2) + reviewed_pad + 70
+                y_pos = i * (reviewed_height + reviewed_pad * 2) + int(review_height / 2) + reviewed_pad
                 review_canvas.create_window(x_pos, y_pos, window=label)
 
         print(str(len(groups)) + " group(s) displayed to be reviewed")
@@ -117,10 +112,12 @@ def on_image_click(index): #event
     image = image_files[index] #event.widget
     # Add or remove the label from the selection
     if image in selected:
+        # Need Highlighting
         #image.configure(borderwidth=1, relief="solid")
         selected.remove(image)
         print("Image deselected")
     else:
+        # Need Highlighting
         #image.configure(borderwidth=5, relief="solid")
         selected.append(image)
         print("Image selected: " + image)
@@ -144,9 +141,15 @@ def create_group():
             print("Group created")
             print("Group consists of: " + str(group))
 
+        fill_raw_images()
         raw_canvas.delete("all")
+        display_raws()
+
+        fill_grouped_images()
         grouped_canvas.delete("all")
         display_groups()
+
+        selected = []
     else:
         print("No images selected")
 
@@ -172,16 +175,16 @@ def open_grouping():
     grouped_label = Label(grouping, text="Grouped Photos", font=(20))
     grouped_label.place(relx=.8, rely=.1, anchor=NE)
 
-    height = 145
-    width = 235
-    pad = 10
+    global raw_height
+    global raw_width
+    global raw_pad
 
     # Raw Canvas
     global raw_canvas
     raw_canvas = Canvas(grouping, bd="3", bg="lightgrey", height=520, width=510)
     raw_canvas.place(relx=.02, rely=.2, anchor=NW)
     # raw_canvas.config(scrollregion=[0, 0, 500, 1000])
-    raw_canvas.config(scrollregion=[0, 0, 500, int(len(image_files)/2)*(height+pad)+pad])
+    raw_canvas.config(scrollregion=[0, 0, 500, int(len(image_files)/2)*(raw_height+raw_pad)+raw_pad])
 
     # Raw Canvas Scrolling Function
     raw_canvas.yview_moveto(0)
@@ -192,23 +195,24 @@ def open_grouping():
     ybar.config(command=raw_canvas.yview)
     raw_canvas.config(yscrollcommand=ybar.set)
 
-    global raw_images
-    raw_images = []
-    for i in range(len(image_files)):
-        images.append(Image.open(os.path.join(folder_path, image_files[i])))
+    fill_raw_images()
+    # global raw_images
+    # raw_images = []
+    # for i in range(len(image_files)):
+    #     raw_images.append(Image.open(os.path.join(folder_path, image_files[i])))
 
-
+    display_raws()
     # Load and display the images
-    for i in range(len(image_files)):
-        print(images[i])
-        images[i] = images[i].resize((width, height), Image.LANCZOS)
-        images[i] = ImageTk.PhotoImage(images[i])
-        label = Label(raw_canvas, image=images[i])
-        # label.bind("<Button-1>", on_image_click)
-        label.bind("<Button-1>", lambda event, index=i: on_image_click(index))
-        x_pos = ((width + pad) * (i % 2)) + 138  # (118*i)+128
-        y_pos = ((height+pad) * (int(i / 2))) + 83  # (73*(i%2))+83
-        raw_canvas.create_window(x_pos, y_pos, window=label)
+    # for i in range(len(image_files)):
+    #     # print(images[i])
+    #     raw_images[i] = raw_images[i].resize((width, height), Image.LANCZOS)
+    #     raw_images[i] = ImageTk.PhotoImage(raw_images[i])
+    #     label = Label(raw_canvas, image=raw_images[i])
+    #     # label.bind("<Button-1>", on_image_click)
+    #     label.bind("<Button-1>", lambda event, index=i: on_image_click(index))
+    #     x_pos = ((width + pad) * (i % 2)) + 138  # (118*i)+128
+    #     y_pos = ((height+pad) * (int(i / 2))) + 83  # (73*(i%2))+83
+    #     raw_canvas.create_window(x_pos, y_pos, window=label)
 
     # Grouped Canvas
     global grouped_canvas
@@ -231,9 +235,26 @@ def open_grouping():
     xbar.config(command=grouped_canvas.xview)
     grouped_canvas.config(xscrollcommand=xbar.set)
 
-    # display_groups()
-
+    fill_grouped_images()
+    display_groups()
     grouping.mainloop()
+
+def fill_grouped_images():
+    global groups
+    global grouped_images
+    for i in range(len(groups)):
+        global group_images
+        group_images = []
+        for j in range(len(groups[i])):
+            group_images.append(Image.open(os.path.join(folder_path, groups[i][j])))
+        grouped_images.append(group_images)
+
+
+def fill_raw_images():
+    global raw_images
+    raw_images = []
+    for i in range(len(image_files)):
+        raw_images.append(Image.open(os.path.join(folder_path, image_files[i])))
 
 def display_groups():
 
@@ -241,14 +262,15 @@ def display_groups():
     width = 165
     pad = 5
 
-    global images
-    images = []
-    for i in range(len(groups)):
-        global group_images
-        group_images = []
-        for j in range(len(groups[i])):
-            group_images.append(Image.open(os.path.join(folder_path, groups[i][j])))
-        grouped_images.append(group_images)
+    global grouped_images
+    grouped_images = []
+    fill_grouped_images()
+    # for i in range(len(groups)):
+    #     global group_images
+    #     group_images = []
+    #     for j in range(len(groups[i])):
+    #         group_images.append(Image.open(os.path.join(folder_path, groups[i][j])))
+    #     grouped_images.append(group_images)
 
     for i in range(len(groups)):
         group_str = "Group " + str(i+1)
@@ -267,6 +289,21 @@ def display_groups():
             grouped_canvas.create_window(x_pos, y_pos, window=label)
 
     print(str(len(groups)) + " group(s) displayed")
+
+def display_raws():
+    global raw_height
+    global raw_width
+    global raw_pad
+    for i in range(len(image_files)):
+        # print(images[i])
+        raw_images[i] = raw_images[i].resize((raw_width, raw_height), Image.LANCZOS)
+        raw_images[i] = ImageTk.PhotoImage(raw_images[i])
+        label = Label(raw_canvas, image=raw_images[i])
+        label.bind("<Button-1>", lambda event, index=i: on_image_click(index))
+        x_pos = ((raw_width + raw_pad) * (i % 2)) + 138
+        y_pos = ((raw_height + raw_pad) * (int(i / 2))) + 83
+        raw_canvas.create_window(x_pos, y_pos, window=label)
+
 
 # ______________________________________________________________________________________________________________________
 # Phase 1: Landing Page
@@ -300,6 +337,13 @@ def open_landing():
 # ______________________________________________________________________________________________________________________
 # Phase 0: Global Variables
 # ______________________________________________________________________________________________________________________
+
+raw_height = 145
+raw_width = 235
+raw_pad = 10
+
+raw_images = []
+grouped_images = []
 
 selected = []
 groups = []
