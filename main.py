@@ -141,7 +141,7 @@ def create_group():
             print("Group created")
             print("Group consists of: " + str(group))
 
-        global grouped_canvas
+        raw_canvas.delete("all")
         grouped_canvas.delete("all")
         display_groups()
     else:
