@@ -372,6 +372,20 @@ def select_folder(page):
     grouped_images = []
     groups = []
     folder_path = filedialog.askdirectory()
+    working_folder = os.path.join(folder_path, 'workings')
+    if not os.path.exists(working_folder):
+        os.makedirs(working_folder)
+
+    for root, dirs, files in os.walk(folder_path):
+        for file in files:
+            if file.endswith('.dng'):
+                src_path = os.path.join(root, file)
+                dst_path = os.path.join(working_folder, file)
+                try:
+                    shutil.copy2(src_path, dst_path)
+                except shutil.SameFileError:
+                    print(f"{src_path} and {dst_path} are the same file, skipping.")
+
     image_files = [f for f in os.listdir(folder_path) if f.endswith(".dng")]
 
     # print(folder_path, image_files) # debug
