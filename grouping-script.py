@@ -33,11 +33,15 @@ def rename_file(file_name, group_num, folder_path):
 def open_final():
     global folder
     folder = folder_path[folder_path.rfind('/') + 1:]
+    working_folder = os.path.join(folder_path, 'workings')
     i = 0
     for group in groups:
         for image_file in group:
             rename_file(image_file, i, folder_path)
         i += 1
+    
+    # Delete the workings folder after it's no longer needed
+    shutil.rmtree(working_folder)
 
     review.destroy()
     global final
