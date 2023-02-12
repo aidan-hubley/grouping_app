@@ -14,7 +14,7 @@ import shutil
 def rename_file(file_name, group_num, folder_path):
     if file_name.endswith('.dng'):
         folder_name = os.path.basename(folder_path)
-        groupings_dir = folder_name + '_groupings'
+        groupings_dir = folder_name + '_grouped'
         os.makedirs(groupings_dir, exist_ok=True)
 
         dir_name = 'group' + str(group_num + 1)
