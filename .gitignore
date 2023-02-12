@@ -3,3 +3,5 @@ Real/
 photos/
 .idea/
 venv/
+build/
+dist/

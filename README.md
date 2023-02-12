@@ -35,7 +35,9 @@ $ python main.py
 ```
 
 <br />
-## Author
+## Authors
 
-👤 **Aidan**
-👤 **Josh**
+👤 **Aidan Hubley**
+👤 **Joshua Phillips**
+👤 **Alex Karoki**
+👤 **Timothy Muraya**
