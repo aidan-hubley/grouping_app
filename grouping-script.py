@@ -14,6 +14,7 @@ import shutil
 def rename_file(file_name, group_num, folder_path):
     if file_name.endswith('.dng'):
         folder_name = os.path.basename(folder_path)
+        working_folder = os.path.join(folder_path, 'workings')
         groupings_dir = folder_name + '_grouped'
         os.makedirs(groupings_dir, exist_ok=True)
 
@@ -23,7 +24,7 @@ def rename_file(file_name, group_num, folder_path):
 
         # file_new_name = file_name[:len(file_name) - 4] + '-' + str(group_num + 1) + '.dng'
         file_new_name = file_name
-        src = folder_path + '/' + file_name
+        src = working_folder + '/' + file_name
         dst = os.getcwd() + '/' + dir_path + '/' + file_new_name
         shutil.copy2(src, dst)
     else:
@@ -264,20 +265,22 @@ def fill_grouped_images():
     global groups
     global grouped_images
     grouped_images = []
+    working_folder = os.path.join(folder_path, 'workings')
     for i in range(len(groups)):
         global group_images
         group_images = []
         for j in range(len(groups[i])):
             print(str(groups[i][j]) + " added to image group " + str(i + 1))
-            group_images.append(Image.open(os.path.join(folder_path, groups[i][j])))
+            group_images.append(Image.open(os.path.join(working_folder, groups[i][j])))
         grouped_images.append(group_images)
 
 
 def fill_raw_images():
     global raw_images
     raw_images = []
+    working_folder = os.path.join(folder_path, 'workings')
     for i in range(len(image_files)):
-        raw_images.append(Image.open(os.path.join(folder_path, image_files[i])))
+        raw_images.append(Image.open(os.path.join(working_folder, image_files[i])))
 
 def ungroup(index):
     global groups
@@ -390,7 +393,7 @@ def select_folder(page):
                 except shutil.SameFileError:
                     print(f"{src_path} and {dst_path} are the same file, skipping.")
 
-    image_files = [f for f in os.listdir(folder_path) if f.endswith(".dng")]
+    image_files = [f for f in os.listdir(working_folder) if f.endswith(".dng")]
 
     # print(folder_path, image_files) # debug
     page.destroy()
