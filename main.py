@@ -181,6 +181,18 @@ def create_group():
     else:
         print("No images selected")
 
+#Add file to existing group -- in progress
+def add_to_group(image_name, group_num):
+    global groups
+    global image_files
+    if image_name in image_files:
+        if group_num > len(groups):
+            for i in range(len(groups), group_num):
+                groups.append([])
+        groups[group_num].append(image_name)
+        image_files.remove(image_name)
+    else:
+        print('File not found in image files')
 
 def open_grouping():
     global grouping
@@ -352,6 +364,17 @@ def display_raws():
 # Phase 1: Landing Page
 # ______________________________________________________________________________________________________________________
 
+#Check for existing groups -- In progress
+def make_groups():
+    for imagefile in image_files:
+        group_num_string = ''
+        for i in range(imagefile.rfind('-')+1, imagefile.len-1):
+            if imagefile[i] in {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0'}:
+                group_num_string += imagefile[i]
+
+        if group_num_string != '':
+            add_to_group(imagefile, int(group_num_string)-1)
+
 # Select Folder from directory
 def select_folder(page):
     global folder_path
@@ -362,6 +385,7 @@ def select_folder(page):
     groups = []
     folder_path = filedialog.askdirectory()
     image_files = [f for f in os.listdir(folder_path) if f.endswith(".dng")]
+    make_groups()
 
     # print(folder_path, image_files) # debug
     page.destroy()
@@ -393,6 +417,7 @@ raw_pad = 10
 
 raw_images = []
 grouped_images = []
+image_files = []
 
 selected = []
 groups = []
