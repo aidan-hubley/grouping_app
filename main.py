@@ -368,7 +368,7 @@ def display_raws():
 def make_groups():
     for imagefile in image_files:
         group_num_string = ''
-        for i in range(imagefile.rfind('-')+1, imagefile.len-1):
+        for i in range(imagefile.rfind('-')+1, len(imagefile)-1):
             if imagefile[i] in {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0'}:
                 group_num_string += imagefile[i]
 
