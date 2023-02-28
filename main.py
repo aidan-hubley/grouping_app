@@ -22,6 +22,9 @@ def rename_file(file_name, group_num):
 
 
 def open_final():
+    # Unhide the working folder
+    os.system('attrib -h "' + folder_path + '"')
+
     global folder
     folder = folder_path[folder_path.rfind('/') + 1:]
     i = 0
