@@ -3,6 +3,8 @@ from tkinter import filedialog
 from tkinter import *
 from tkinter.ttk import *
 from PIL import Image, ImageTk
+import webbrowser
+
 
 
 # ______________________________________________________________________________________________________________________
@@ -40,7 +42,7 @@ def open_final():
     saved.place(relx=0.5, rely=0.3, anchor=CENTER)
 
     # Buttons
-    select = Button(final, text="Select Folder", command=lambda: select_folder(final))
+    select = Button(final, text="Select New Folder", command=lambda: select_folder(final))
     select.place(relx=0.5, rely=0.5, anchor=CENTER)
     close = Button(final, text="Close", command=final.destroy)
     close.place(relx=0.5, rely=0.7, anchor=CENTER)
@@ -151,7 +153,7 @@ def on_image_click(index, event):  # event
         selected.remove(image)
         print("Image deselected: " + image)
     else:
-        event.widget.config(background="#00a2ed")
+        event.widget.config(background="black")
         selected.append(image)
         print("Image selected: " + image)
 
@@ -365,15 +367,15 @@ def display_raws():
 # ______________________________________________________________________________________________________________________
 
 #Check for existing groups -- In progress
-def make_groups():
-    for imagefile in image_files:
-        group_num_string = ''
-        for i in range(imagefile.rfind('-')+1, len(imagefile)-1):
-            if imagefile[i] in {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0'}:
-                group_num_string += imagefile[i]
-
-        if group_num_string != '':
-            add_to_group(imagefile, int(group_num_string)-1)
+# def make_groups():
+#     for imagefile in image_files:
+#         group_num_string = ''
+#         for i in range(imagefile.rfind('-')+1, len(imagefile)-1):
+#             if imagefile[i] in {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0'}:
+#                 group_num_string += imagefile[i]
+#
+#         if group_num_string != '':
+#             add_to_group(imagefile, int(group_num_string)-1)
 
 # Select Folder from directory
 def select_folder(page):
@@ -385,12 +387,14 @@ def select_folder(page):
     groups = []
     folder_path = filedialog.askdirectory()
     image_files = [f for f in os.listdir(folder_path) if f.endswith(".dng")]
-    make_groups()
+    # make_groups()
 
     # print(folder_path, image_files) # debug
     page.destroy()
     open_grouping()
 
+def readmelink():
+    webbrowser.open("https://github.com/aidan-hubley/grouping_app/blob/main/README.md")
 
 def open_landing():
     global landing
@@ -403,7 +407,10 @@ def open_landing():
     hi = Label(landing, text="Welcome", font=(10))
     hi.place(relx=0.5, rely=0.3, anchor=CENTER)
     select = Button(landing, text="Select Folder", command=lambda: select_folder(landing))
-    select.place(relx=0.5, rely=0.6, anchor=CENTER)
+    select.place(relx=0.44, rely=0.6, anchor=CENTER)
+    readme = Button(landing, text="?", width=3, command=readmelink)
+    readme.place(relx=0.66, rely=0.6, anchor=CENTER)
+
     landing.mainloop()
 
 
