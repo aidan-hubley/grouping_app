@@ -12,9 +12,19 @@ import atexit
 
 # takes in the name of a file and adds a hyphen and the group number to it
 def rename_file(file_name, group_num):
+    grouped = False
+    regrouped_file_name = file_name
     if file_name.endswith('.dng'):
-        # if file_name.find('-') != -1
-        file_new_name = file_name[:len(file_name) - 4] + '-' + str(group_num + 1) + '.dng'
+
+        if file_name.find('-') != -1:
+            grouped = True
+            for i in range(file_name.rfind('-')+1, file_name.rfind('.')):
+                if file_name[i] not in {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0'}:
+                    grouped = False
+            if grouped:
+                regrouped_file_name = file_name[:file_name.rfind('-')] + '.dng'
+
+        file_new_name = regrouped_file_name[:len(regrouped_file_name) - 4] + '-' + str(group_num + 1) + '.dng'
         # renames file
         os.rename(folder_path + '/' + file_name, folder + '/' + file_new_name)
     else:
