@@ -209,6 +209,8 @@ def open_grouping():
     reselect.place(relx=.05, rely=.04, anchor=NW)
     group_photos = Button(grouping, text="Group Photos", command=create_group)
     group_photos.place(relx=.5, rely=.1, anchor=N)
+    ungroupall = Button(grouping, text="Ungroup All", command=ungroup_all)
+    ungroupall.place(relx=.5, rely=.9, anchor=N)
     review_groups = Button(grouping, text="Review Groups >", command=open_review)
     review_groups.place(relx=.95, rely=.04, anchor=NE)
 
@@ -280,12 +282,20 @@ def fill_raw_images():
 
 def ungroup(index):
     global groups
-    print(groups)
     for image in groups[index]:
         image_files.append(image)
 
     del groups[index]
-    print(groups)
+
+    display_groups()
+    display_raws()
+
+def ungroup_all(): # Josh Look at this :)
+    global groups
+    for index in range(len(groups)):
+        for image in groups[index]:
+            image_files.append(image)
+            del groups[index]
 
     display_groups()
     display_raws()
@@ -394,7 +404,7 @@ def select_folder(page):
     open_grouping()
 
 def readmelink():
-    webbrowser.open("https://github.com/aidan-hubley/grouping_app/blob/main/README.md")
+    webbrowser.open("https://github.com/aidan-hubley/grouping_app/blob/main/ReadMe.md")
 
 def open_landing():
     global landing
