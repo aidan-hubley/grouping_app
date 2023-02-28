@@ -19,7 +19,8 @@ This should allow for easy identification of grouping when editing images
 ## How to Use the Grouping App
 ### Step 1: Select Folder
 Select a folder that contains .dng images
-<br/>(jira card raw image folder)
+<br />(jira card raw image folder)
+<br />_Note_: Only select folders that are <b>Not Hidden</b>, _hidden folders_ are currently being grouped by someone else
 
 ### Step 2: Group Photos
 Select images in the 'Raw Photos' column that belong grouped together

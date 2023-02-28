@@ -399,6 +399,9 @@ def select_folder(page):
     image_files = [f for f in os.listdir(folder_path) if f.endswith(".dng")]
     # make_groups()
 
+    # hide folder
+    os.system('attrib +h "' + folder_path + '"')
+
     # print(folder_path, image_files) # debug
     page.destroy()
     open_grouping()
