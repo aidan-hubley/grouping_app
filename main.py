@@ -4,8 +4,7 @@ from tkinter import *
 from tkinter.ttk import *
 from PIL import Image, ImageTk
 import webbrowser
-
-
+import atexit
 
 # ______________________________________________________________________________________________________________________
 # Phase 4: Final Page
@@ -408,6 +407,12 @@ def select_folder(page):
     # print(folder_path, image_files) # debug
     page.destroy()
     open_grouping()
+
+def on_exit():
+    print(folder_path)
+    os.system('attrib -h "' + folder_path + '"')
+
+atexit.register(on_exit)
 
 def readmelink():
     webbrowser.open("https://github.com/aidan-hubley/grouping_app/blob/main/ReadMe.md")
