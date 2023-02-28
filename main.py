@@ -96,7 +96,7 @@ def open_review():
         dynamic_width = 600
 
         for group in groups:
-            if (len(group) > 3):
+            if len(group) > 3:
                 dynamic_width = ((review_pad + review_width + review_pad) * (len(group) - 3) + 600)
 
         review_canvas.config(scrollregion=[0, 0, dynamic_width, len(groups) * (review_height + review_pad + review_pad)])
@@ -297,8 +297,10 @@ def ungroup_all(): # Josh Look at this :)
     for index in range(len(groups)):
         for image in groups[index]:
             image_files.append(image)
-            del groups[index]
 
+        del groups[index]
+
+    display_raws()
     display_groups()
     display_raws()
 
@@ -378,16 +380,20 @@ def display_raws():
 # Phase 1: Landing Page
 # ______________________________________________________________________________________________________________________
 
-#Check for existing groups -- In progress
-# def make_groups():
-#     for imagefile in image_files:
-#         group_num_string = ''
-#         for i in range(imagefile.rfind('-')+1, len(imagefile)-1):
-#             if imagefile[i] in {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0'}:
-#                 group_num_string += imagefile[i]
-#
-#         if group_num_string != '':
-#             add_to_group(imagefile, int(group_num_string)-1)
+# Check for existing groups -- In progress
+def make_groups():
+    for j in range(len(image_files)-1, -1, -1):
+        group_num_string = ''
+        if image_files[j].find("-") != -1:
+            for i in range(image_files[j].rfind('-')+1, image_files[j].rfind('.')):
+                if image_files[j][i] in {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0'}:
+                    group_num_string += image_files[j][i]
+                else:
+                    group_num_string = ''
+                    break
+
+        if group_num_string != '':
+            add_to_group(image_files[j], int(group_num_string)-1)
 
 # Select Folder from directory
 def select_folder(page):
@@ -397,6 +403,10 @@ def select_folder(page):
     global groups
     grouped_images = []
     groups = []
+
+    if (folder_path != ''):
+        os.system('attrib -h "' + folder_path + '"')
+
     folder_path = filedialog.askdirectory()
     image_files = [f for f in os.listdir(folder_path) if f.endswith(".dng")]
     # make_groups()
@@ -411,8 +421,6 @@ def select_folder(page):
 def on_exit():
     print(folder_path)
     os.system('attrib -h "' + folder_path + '"')
-
-atexit.register(on_exit)
 
 def readmelink():
     webbrowser.open("https://github.com/aidan-hubley/grouping_app/blob/main/ReadMe.md")
@@ -447,8 +455,11 @@ raw_images = []
 grouped_images = []
 image_files = []
 
+folder_path = ""
+
 selected = []
 groups = []
+atexit.register(on_exit)
 open_landing()
 
 # ______________________________________________________________________________________________________________________
