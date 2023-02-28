@@ -13,6 +13,7 @@ import atexit
 # takes in the name of a file and adds a hyphen and the group number to it
 def rename_file(file_name, group_num):
     if file_name.endswith('.dng'):
+        # if file_name.find('-') != -1
         file_new_name = file_name[:len(file_name) - 4] + '-' + str(group_num + 1) + '.dng'
         # renames file
         os.rename(folder_path + '/' + file_name, folder + '/' + file_new_name)
@@ -190,11 +191,15 @@ def add_to_group(image_name, group_num):
     global groups
     global image_files
     if image_name in image_files:
-        if group_num > len(groups):
-            for i in range(len(groups), group_num):
+        if group_num > len(groups)-1:
+            for i in range(len(groups), group_num+1):
                 groups.append([])
         groups[group_num].append(image_name)
         image_files.remove(image_name)
+
+        print("raws: " + str(image_files))
+        print("groups: " + str(groups))
+
     else:
         print('File not found in image files')
 
@@ -282,6 +287,7 @@ def fill_raw_images():
     for i in range(len(image_files)):
         raw_images.append(Image.open(os.path.join(folder_path, image_files[i])))
 
+
 def ungroup(index):
     global groups
     for image in groups[index]:
@@ -292,9 +298,10 @@ def ungroup(index):
     display_groups()
     display_raws()
 
-def ungroup_all(): # Josh Look at this :)
+
+def ungroup_all(): # In Progress
     global groups
-    for index in range(len(groups)):
+    for index in range(len(groups)-1, -1, -1):
         for image in groups[index]:
             image_files.append(image)
 
@@ -302,7 +309,6 @@ def ungroup_all(): # Josh Look at this :)
 
     display_raws()
     display_groups()
-    display_raws()
 
 def display_groups():
     height = 110
@@ -409,7 +415,7 @@ def select_folder(page):
 
     folder_path = filedialog.askdirectory()
     image_files = [f for f in os.listdir(folder_path) if f.endswith(".dng")]
-    # make_groups()
+    make_groups()
 
     # hide folder
     os.system('attrib +h "' + folder_path + '"')
