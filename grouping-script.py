@@ -18,12 +18,12 @@ def rename_file(file_name, group_num, folder_path):
         groupings_dir = folder_name + '_grouped'
         os.makedirs(groupings_dir, exist_ok=True)
 
-        dir_name = 'group' + str(group_num + 1)
-        dir_path = groupings_dir + '/' + dir_name
+        # dir_name = 'final' + str(group_num + 1)
+        # dir_path = groupings_dir + '/' + dir_name
+        dir_path = groupings_dir
         os.makedirs(dir_path, exist_ok=True)
 
-        # file_new_name = file_name[:len(file_name) - 4] + '-' + str(group_num + 1) + '.dng'
-        file_new_name = file_name
+        file_new_name = str(group_num + 1) + '-' + file_name
         src = working_folder + '/' + file_name
         dst = os.getcwd() + '/' + dir_path + '/' + file_new_name
         shutil.copy2(src, dst)
