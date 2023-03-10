@@ -92,6 +92,8 @@ def open_review():
         save_groups.place(relx=.95, rely=.04, anchor=NE)
         grouped_label = Label(review, text="Review Groups", font=20)
         grouped_label.place(relx=.5, rely=.1, anchor=CENTER)
+        count_label = Label(review, text=f"Expected Final Count: {len(groups)}")
+        count_label.place(relx=.5, rely=0.06, anchor=CENTER)
 
         # Display Groups
         review_height = 110
