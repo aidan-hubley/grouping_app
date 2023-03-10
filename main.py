@@ -398,18 +398,18 @@ def display_raws():
 
 # Check for existing groups -- In progress
 def make_groups():
-    for j in range(len(image_files)-1, -1, -1):
+    for i in range(len(image_files)-1, -1, -1):
         group_num_string = ''
-        if image_files[j].find("-") != -1:
-            for i in range(image_files[j].rfind('-')+1, image_files[j].rfind('.')):
-                if image_files[j][i] in {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0'}:
-                    group_num_string += image_files[j][i]
+        if image_files[i].find("-") != -1:
+            for j in range(image_files[i].rfind('-')+1, image_files[i].rfind('.')):
+                if image_files[i][j] in {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0'}:
+                    group_num_string += image_files[i][j]
                 else:
                     group_num_string = ''
                     break
 
         if group_num_string != '':
-            add_to_group(image_files[j], int(group_num_string)-1)
+            add_to_group(image_files[i], int(group_num_string)-1)
 
 # Select Folder from directory
 def select_folder(page):
@@ -452,9 +452,9 @@ def open_landing():
     hi = Label(landing, text="Welcome", font=(10))
     hi.place(relx=0.5, rely=0.3, anchor=CENTER)
     select = Button(landing, text="Select Folder", command=lambda: select_folder(landing))
-    select.place(relx=0.44, rely=0.6, anchor=CENTER)
-    readme = Button(landing, text="?", width=3, command=readmelink)
-    readme.place(relx=0.66, rely=0.6, anchor=CENTER)
+    select.place(relx=0.5, rely=0.6, anchor=CENTER)
+    readme = Button(landing, text="Info", command=readmelink)
+    readme.place(relx=0.5, rely=0.7, anchor=CENTER)
 
     landing.mainloop()
 
