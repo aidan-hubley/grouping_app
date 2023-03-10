@@ -13,20 +13,20 @@ import atexit
 # takes in the name of a file and adds a hyphen and the group number to it
 def rename_file(file_name, group_num):
     grouped = False
-    regrouped_file_name = file_name
+    ungrouped_file_name = file_name
     if file_name.endswith('.dng'):
 
         if file_name.find('-') != -1:
             grouped = True
-            for i in range(file_name.rfind('-')+1, file_name.rfind('.')):
+            for i in range(0, file_name.find('-')):
                 if file_name[i] not in {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0'}:
                     grouped = False
             if grouped:
-                regrouped_file_name = file_name[:file_name.rfind('-')] + '.dng'
+                ungrouped_file_name = file_name[file_name.find('-')+1:]
 
-        file_new_name = regrouped_file_name[:len(regrouped_file_name) - 4] + '-' + str(group_num + 1) + '.dng'
+        file_new_name = str(group_num+1) + "-" + ungrouped_file_name
         # renames file
-        os.rename(folder_path + '/' + file_name, folder + '/' + file_new_name)
+        os.rename(folder_path + '/' + file_name, folder_path + '/' + file_new_name)
     else:
         print("File is not of type dng")
 
@@ -35,8 +35,8 @@ def open_final():
     # Unhide the working folder
     os.system('attrib -h "' + folder_path + '"')
 
-    global folder
-    folder = folder_path[folder_path.rfind('/') + 1:]
+    #global folder
+    #folder = folder_path[folder_path.rfind('/') + 1:]
     i = 0
     for group in groups:
         for image_file in group:
@@ -401,7 +401,7 @@ def make_groups():
     for i in range(len(image_files)-1, -1, -1):
         group_num_string = ''
         if image_files[i].find("-") != -1:
-            for j in range(image_files[i].rfind('-')+1, image_files[i].rfind('.')):
+            for j in range(0, image_files[i].find('-')):
                 if image_files[i][j] in {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0'}:
                     group_num_string += image_files[i][j]
                 else:
