@@ -17,6 +17,11 @@ _Example:_
 This should allow for easy identification of grouping when editing images
 
 ## How to Use the Grouping App
+
+### Video Tutorial:
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/MO0SkZuFlfM/0.jpg)](https://www.youtube.com/watch?v=MO0SkZuFlfM)
+
+
 ### Step 1: Select Folder
 Select a folder that contains .dng images
 <br>(jira card raw image folder)
