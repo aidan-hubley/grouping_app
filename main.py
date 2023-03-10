@@ -396,7 +396,7 @@ def display_raws():
 # Phase 1: Landing Page
 # ______________________________________________________________________________________________________________________
 
-# Check for existing groups -- In progress
+# Check for existing groups
 def make_groups():
     for i in range(len(image_files)-1, -1, -1):
         group_num_string = ''
@@ -420,22 +420,28 @@ def select_folder(page):
     grouped_images = []
     groups = []
 
-    if (folder_path != ''):
-        os.system('attrib -h "' + folder_path + '"')
+    # selecting new folder from final page
+    if (page == 'final'):
+        if (folder_path != ''):
+            os.system('attrib -h "' + folder_path + '"')
 
     folder_path = filedialog.askdirectory()
-    image_files = [f for f in os.listdir(folder_path) if f.endswith(".dng")]
-    make_groups()
 
-    # hide folder
-    os.system('attrib +h "' + folder_path + '"')
+    # check if folder is hidden
+    if bool(os.stat(folder_path).st_file_attributes & 2):
+        print("Hidden!")
+    else:
+        # hide folder
+        os.system('attrib +h "' + folder_path + '"')
 
-    # print(folder_path, image_files) # debug
-    page.destroy()
-    open_grouping()
+        image_files = [f for f in os.listdir(folder_path) if f.endswith(".dng")]
+        make_groups()
+
+        # print(folder_path, image_files) # debug
+        page.destroy()
+        open_grouping()
 
 def on_exit():
-    print(folder_path)
     os.system('attrib -h "' + folder_path + '"')
 
 def readmelink():
