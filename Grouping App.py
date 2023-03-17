@@ -5,6 +5,7 @@ from tkinter.ttk import *
 from PIL import Image, ImageTk
 import webbrowser
 import atexit
+import keyboard
 
 # ______________________________________________________________________________________________________________________
 # Phase 4: Final Page
@@ -48,7 +49,7 @@ def open_final():
     final = Tk()
     final.title("Final Page")
     final.geometry("250x250")
-    final.maxsize(250, 250)
+    # final.maxsize(250, 250)
     final.minsize(250, 250)
 
     saved = Label(final, text="Grouped Saved!", font=(10))
@@ -82,7 +83,7 @@ def open_review():
         review = Tk()
         review.title("Review Page")
         review.geometry("650x700")
-        review.maxsize(650, 700)
+        # review.maxsize(650, 700)
         review.minsize(650, 700)
 
         # Buttons + Label
@@ -172,7 +173,6 @@ def on_image_click(index, event):  # event
         selected.append(image)
         print("Image selected: " + image)
 
-
 def create_group():
     global selected
     global groups
@@ -220,7 +220,7 @@ def open_grouping():
     grouping = Tk()
     grouping.title("Grouping Page")
     grouping.geometry("1200x700")
-    grouping.maxsize(1200, 700)
+    # grouping.maxsize(1200, 700)
     grouping.minsize(1200, 700)
 
     # Buttons
@@ -257,7 +257,6 @@ def open_grouping():
     ybar.place(relx=0, rely=0, height=530, anchor=NW)
     ybar.config(command=raw_canvas.yview)
     raw_canvas.config(yscrollcommand=ybar.set)
-
 
     # Load and display the raw images
     display_raws()
@@ -454,7 +453,7 @@ def open_landing():
     landing = Tk()
     landing.title("Landing Page")
     landing.geometry("250x250")
-    landing.maxsize(250, 250)
+    # landing.maxsize(250, 250)
     landing.minsize(250, 250)
 
     hi = Label(landing, text="Welcome", font=(10))

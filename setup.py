@@ -2,8 +2,8 @@ import PyInstaller.__main__
 import os
 
 PyInstaller.__main__.run([
-    'Grouping-%s%' 'main.py',
+    'Grouping-%s%' 'Grouping App.py',
     '--onefile',
     '--noconsole',
-    os.path.join('', 'main.py'), """your script and path to the script"""
+    os.path.join('', 'Grouping App.py'), """your script and path to the script"""
 ])

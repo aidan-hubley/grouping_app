@@ -32,7 +32,7 @@ $ pip install -r requirements.txt
 **Start the Grouping script**
 
 ```bash
-$ python main.py
+$ python Grouping App.py
 ```
 
 <br />
