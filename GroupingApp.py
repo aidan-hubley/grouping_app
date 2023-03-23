@@ -5,7 +5,7 @@ from tkinter.ttk import *
 from PIL import Image, ImageTk
 import webbrowser
 import atexit
-import keyboard
+import math
 
 # ______________________________________________________________________________________________________________________
 # Phase 4: Final Page
@@ -32,6 +32,7 @@ def rename_file(file_name, group_num):
         print("File is not of type dng")
 
 
+# opens the final confirmation page
 def open_final():
     # Unhide the working folder
     os.system('attrib -h "' + folder_path + '"')
@@ -68,16 +69,17 @@ def open_final():
 # Phase 3: Review Groups
 # ______________________________________________________________________________________________________________________
 
+# reopens grouping page from review page
 def grouping_page_rerun():
     review.destroy()
     open_grouping()
 
-
+# opens final review page from grouping page
 def open_review():
     if (len(image_files) > 0):
         print("Please group all Raws")
     else:
-        print("All Raws are grouped")
+        # print("All Raws are grouped")
         grouping.destroy()
         global review
         review = Tk()
@@ -159,6 +161,7 @@ def open_review():
 # Phase 2: Group Photos
 # ______________________________________________________________________________________________________________________
 
+# on image being clicked, add image to selection and highlights image
 def on_image_click(index, event):  # event
     global selected
     global image_files
@@ -173,6 +176,10 @@ def on_image_click(index, event):  # event
         selected.append(image)
         print("Image selected: " + image)
 
+def create_group_event(event):
+    create_group()
+
+# makes selected images into a new group
 def create_group():
     global selected
     global groups
@@ -198,7 +205,7 @@ def create_group():
     else:
         print("No images selected")
 
-#Add file to existing group -- in progress
+#Add file to existing group
 def add_to_group(image_name, group_num):
     global groups
     global image_files
@@ -209,12 +216,13 @@ def add_to_group(image_name, group_num):
         groups[group_num].append(image_name)
         image_files.remove(image_name)
 
-        print("raws: " + str(image_files))
-        print("groups: " + str(groups))
+        # print("raws: " + str(image_files))
+        # print("groups: " + str(groups))
 
     else:
         print('File not found in image files')
 
+# opens grouping page
 def open_grouping():
     global grouping
     grouping = Tk()
@@ -222,6 +230,8 @@ def open_grouping():
     grouping.geometry("1200x700")
     # grouping.maxsize(1200, 700)
     grouping.minsize(1200, 700)
+
+    grouping.bind('<Return>', create_group_event)
 
     # Buttons
     reselect = Button(grouping, text="< Reselect Folder", command=lambda: select_folder(grouping))
@@ -234,9 +244,9 @@ def open_grouping():
     review_groups.place(relx=.95, rely=.04, anchor=NE)
 
     # Text
-    raw_label = Label(grouping, text="Raw Photos", font=(20))
+    raw_label = Label(grouping, text="Raw Photos", font = (20))
     raw_label.place(relx=.2, rely=.1, anchor=NW)
-    grouped_label = Label(grouping, text="Grouped Photos", font=(20))
+    grouped_label = Label(grouping, text="Grouped Photos", font = (20))
     grouped_label.place(relx=.8, rely=.1, anchor=NE)
 
     global raw_height
@@ -265,7 +275,6 @@ def open_grouping():
     global grouped_canvas
     grouped_canvas = Canvas(grouping, bd="3", bg="lightgrey", height=520, width=510)
     grouped_canvas.place(relx=.975, rely=.2, anchor=NE)
-    # review_canvas.config(scrollregion=[0, 0, 600, len(groups) * (review_height + review_pad) + review_pad + 100])
     grouped_canvas.config(scrollregion=[0, 0, 570, 1000])
 
     # Grouped Canvas Scrolling Function
@@ -279,48 +288,7 @@ def open_grouping():
     grouping.mainloop()
 
 
-def fill_grouped_images():
-    global groups
-    global grouped_images
-    grouped_images = []
-    for i in range(len(groups)):
-        global group_images
-        group_images = []
-        for j in range(len(groups[i])):
-            print(str(groups[i][j]) + " added to image group " + str(i + 1))
-            group_images.append(Image.open(os.path.join(folder_path, groups[i][j])))
-        grouped_images.append(group_images)
-
-
-def fill_raw_images():
-    global raw_images
-    raw_images = []
-    for i in range(len(image_files)):
-        raw_images.append(Image.open(os.path.join(folder_path, image_files[i])))
-
-
-def ungroup(index):
-    global groups
-    for image in groups[index]:
-        image_files.append(image)
-
-    del groups[index]
-
-    display_groups()
-    display_raws()
-
-
-def ungroup_all(): # In Progress
-    global groups
-    for index in range(len(groups)-1, -1, -1):
-        for image in groups[index]:
-            image_files.append(image)
-
-        del groups[index]
-
-    display_raws()
-    display_groups()
-
+# displays grouped images in grouped canvas
 def display_groups():
     height = 110
     width = 165
@@ -332,12 +300,11 @@ def display_groups():
     grouped_canvas.delete("all")
     fill_grouped_images()
 
+    # set scrollbar length
     dynamic_width = 510
-
     for group in groups:
-        if(len(group) > 2):
+         if(len(group) > 2):
             dynamic_width = (pad + width + pad) * (len(group)-2) + 420
-
     grouped_canvas.config(scrollregion=[0, 0, dynamic_width, len(groups) * (height + pad + pad)])
 
     displayed = 0
@@ -374,7 +341,7 @@ def display_groups():
     xbar.config(command=grouped_canvas.xview)
     grouped_canvas.config(xscrollcommand=xbar.set)
 
-
+# displays raw images in raw canvas
 def display_raws():
     global raw_height
     global raw_width
@@ -382,6 +349,8 @@ def display_raws():
 
     raw_canvas.delete("all")
     fill_raw_images()
+
+    raw_canvas.config(scrollregion=[0, 0, 510, math.ceil(len(image_files) / 2)  * (raw_height + raw_pad) + raw_pad])
 
     for i in range(len(image_files)):
         raw_images[i] = raw_images[i].resize((raw_width, raw_height), Image.LANCZOS)
@@ -391,6 +360,50 @@ def display_raws():
         x_pos = ((raw_width + raw_pad) * (i % 2)) + 138
         y_pos = ((raw_height + raw_pad) * (int(i / 2))) + 83
         raw_canvas.create_window(x_pos, y_pos, window=label)
+
+
+# updates grouped image file array from grouped file path array
+def fill_grouped_images():
+    global groups
+    global grouped_images
+    grouped_images = []
+    for i in range(len(groups)):
+        global group_images
+        group_images = []
+        for j in range(len(groups[i])):
+            print(str(groups[i][j]) + " added to image group " + str(i + 1))
+            group_images.append(Image.open(os.path.join(folder_path, groups[i][j])))
+        grouped_images.append(group_images)
+
+# updates raw image file array from raw file path array
+def fill_raw_images():
+    global raw_images
+    raw_images = []
+    for i in range(len(image_files)):
+        raw_images.append(Image.open(os.path.join(folder_path, image_files[i])))
+
+# removes a group
+def ungroup(index):
+    global groups
+    for image in groups[index]:
+        image_files.append(image)
+
+    del groups[index]
+
+    display_groups()
+    display_raws()
+
+# removes all groups
+def ungroup_all():
+    global groups
+    for index in range(len(groups)-1, -1, -1):
+        for image in groups[index]:
+            image_files.append(image)
+
+        del groups[index]
+
+    display_raws()
+    display_groups()
 
 
 # ______________________________________________________________________________________________________________________
@@ -418,13 +431,11 @@ def select_folder(page):
     global image_files
     global grouped_images
     global groups
-    grouped_images = []
-    groups = []
 
     # selecting new folder from final page
-    if (page == 'final'):
-        if (folder_path != ''):
-            os.system('attrib -h "' + folder_path + '"')
+    # if (page == 'final'):
+    if (folder_path != ''):
+        os.system('attrib -h "' + folder_path + '"')
 
     folder_path = filedialog.askdirectory()
 
@@ -435,6 +446,9 @@ def select_folder(page):
         # hide folder
         os.system('attrib +h "' + folder_path + '"')
 
+        grouped_images = []
+        groups = []
+
         image_files = [f for f in os.listdir(folder_path) if f.endswith(".dng")]
         make_groups()
 
@@ -442,12 +456,15 @@ def select_folder(page):
         page.destroy()
         open_grouping()
 
+# removes hidden tag from folder on close
 def on_exit():
     os.system('attrib -h "' + folder_path + '"')
 
+# opens readme doc on GitHub
 def readmelink():
     webbrowser.open("https://github.com/aidan-hubley/grouping_app/blob/main/ReadMe.md")
 
+# opens landing page
 def open_landing():
     global landing
     landing = Tk()
@@ -474,15 +491,15 @@ raw_height = 145
 raw_width = 235
 raw_pad = 10
 
-raw_images = []
-grouped_images = []
-image_files = []
-
+raw_images = list()
+grouped_images = list()
+image_files = list()
+selected = list()
+groups = list()
 folder_path = ""
 
-selected = []
-groups = []
 atexit.register(on_exit)
+
 open_landing()
 
 # ______________________________________________________________________________________________________________________
