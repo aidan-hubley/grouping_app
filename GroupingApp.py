@@ -84,9 +84,8 @@ def open_review():
         global review
         review = Tk()
         review.title("Review Page")
-        review.geometry("650x700")
-        # review.maxsize(650, 700)
-        review.minsize(650, 700)
+
+        review.state('zoomed')
 
         # Buttons + Label
         reselect = Button(review, text="< Reselect Groups", command=grouping_page_rerun)
@@ -227,9 +226,11 @@ def open_grouping():
     global grouping
     grouping = Tk()
     grouping.title("Grouping Page")
-    grouping.geometry("1200x700")
+    # grouping.geometry("1200x700")
     # grouping.maxsize(1200, 700)
-    grouping.minsize(1200, 700)
+    # grouping.minsize(1200, 700)
+
+    grouping.state('zoomed')
 
     grouping.bind('<Return>', create_group_event)
 
@@ -252,6 +253,12 @@ def open_grouping():
     global raw_height
     global raw_width
     global raw_pad
+
+    # Old Aspect Ratio in px: 1200, 700
+    # New Aspect Ratio in px: 1920, 1080
+    height_mult = int(grouping.winfo_height()/700)
+    width_mult = int(grouping.winfo_width()/1200)
+
 
     # Raw Canvas
     global raw_canvas
@@ -290,9 +297,15 @@ def open_grouping():
 
 # displays grouped images in grouped canvas
 def display_groups():
-    height = 110
-    width = 165
-    pad = 5
+    # Old Aspect Ratio in px: 1200, 700
+    # Multiply: Width x 1.6 - Height x 1.54
+    # New Aspect Ratio in px: 1920, 1080
+    height_mult = int(grouping.winfo_height()/700)
+    width_mult = int(grouping.winfo_width()/1200)
+    height = 170 * height_mult
+    width = 264 * width_mult
+    height_pad = 5 * height_mult
+    width_pad = 5 * width_mult
 
     global grouped_images
     global groups
