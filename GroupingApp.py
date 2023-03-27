@@ -262,15 +262,20 @@ def open_grouping():
 
     # Raw Canvas
     global raw_canvas
-    raw_canvas = Canvas(grouping, bd="3", bg="lightgrey", height=520, width=510)
+    raw_canvas = Canvas(grouping, bd="3", bg="lightgrey", height=520 * height_mult, width=510 * height_mult)
     raw_canvas.place(relx=.02, rely=.2, anchor=NW)
-    raw_canvas.config(scrollregion=[0, 0, 500, int(len(image_files) / 2) * (raw_height + raw_pad) + raw_pad])
+    raw_canvas.config(scrollregion=[0, 0, int(500 * height_mult), int((int(len(image_files) / 2) * (raw_height + raw_pad) + raw_pad) * width_mult)])
 
     # Raw Canvas Scrolling Function
     raw_canvas.yview_moveto(0)
 
     # Raw Canvas Scrollbar
     ybar = Scrollbar(raw_canvas, orient=VERTICAL)
+
+    #######
+        # Left off here
+    #######
+
     ybar.place(relx=0, rely=0, height=530, anchor=NW)
     ybar.config(command=raw_canvas.yview)
     raw_canvas.config(yscrollcommand=ybar.set)
@@ -317,28 +322,28 @@ def display_groups():
     dynamic_width = 510
     for group in groups:
          if(len(group) > 2):
-            dynamic_width = (pad + width + pad) * (len(group)-2) + 420
-    grouped_canvas.config(scrollregion=[0, 0, dynamic_width, len(groups) * (height + pad + pad)])
+            dynamic_width = (width_pad + width + width_pad) * (len(group)-2) + 420
+    grouped_canvas.config(scrollregion=[0, 0, dynamic_width, len(groups) * (height + height_pad + height_pad)])
 
     displayed = 0
 
     for i in range(len(groups)):
         displayed = i + 1
         group_str = "Group " + str(i + 1)
-        grouped_canvas.create_text(42, 30 + (height + pad * 2) * i, text=group_str)
+        grouped_canvas.create_text(42, 30 + (height + height_pad * 2) * i, text=group_str)
         label = Label(grouped_canvas, text = "Ungroup")
         label.bind("<Button-1>", lambda event, index=i: ungroup(index))
-        grouped_canvas.create_window(42, 80 + (height + pad * 2) * i, window=label)
-        grouped_canvas.create_line(0, (height + pad * 2) + (i * (height + pad * 2)), dynamic_width,
-                                   (height + pad * 2) + (i * (height + pad * 2)))
+        grouped_canvas.create_window(42, 80 + (height + height_pad * 2) * i, window=label)
+        grouped_canvas.create_line(0, (height + height_pad * 2) + (i * (height + height_pad * 2)), dynamic_width,
+                                   (height + height_pad * 2) + (i * (height + height_pad * 2)))
         group_images = grouped_images[i]
 
         for j in range(len(groups[i])):
             group_images[j] = group_images[j].resize((width, height), Image.LANCZOS)
             group_images[j] = ImageTk.PhotoImage(group_images[j])
             label = Label(grouped_canvas, image=group_images[j])
-            x_pos = j * (width + pad * 2) + int(width / 2) + pad + 70
-            y_pos = i * (height + pad * 2) + int(height / 2) + pad
+            x_pos = j * (width + width_pad * 2) + int(width / 2) + width_pad + 70
+            y_pos = i * (height + height_pad * 2) + int(height / 2) + height_pad
             grouped_canvas.create_window(x_pos, y_pos, window=label)
 
     print(str(displayed) + " group(s) displayed")
