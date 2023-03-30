@@ -233,6 +233,7 @@ def open_grouping():
     grouping.state('zoomed')
 
     grouping.bind('<Return>', create_group_event)
+    #grouping.bind('<Configure>', on_resize)
 
     # Buttons
     reselect = Button(grouping, text="< Reselect Folder", command=lambda: select_folder(grouping))
@@ -253,30 +254,33 @@ def open_grouping():
     global raw_height
     global raw_width
     global raw_pad
+    # global height_mult
+    # global width_mult
 
     # Old Aspect Ratio in px: 1200, 700
     # New Aspect Ratio in px: 1920, 1080
-    height_mult = int(grouping.winfo_height()/700)
-    width_mult = int(grouping.winfo_width()/1200)
+
+    # height_mult = grouping.winfo_height()/700
+    # width_mult = grouping.winfo_width()/1200
+
+    #print(grouping.winfo_height(), height_mult)
 
 
     # Raw Canvas
     global raw_canvas
-    raw_canvas = Canvas(grouping, bd="3", bg="lightgrey", height=520 * height_mult, width=510 * height_mult)
-    raw_canvas.place(relx=.02, rely=.2, anchor=NW)
-    raw_canvas.config(scrollregion=[0, 0, int(500 * height_mult), int((int(len(image_files) / 2) * (raw_height + raw_pad) + raw_pad) * width_mult)])
+    raw_canvas = Canvas(grouping, bd="3", bg="lightgrey")#, height=520 * height_mult, width=510 * height_mult)
+
+    raw_canvas.place(relx=.02, rely=.2, relheight=520/700, relwidth = 510/1200, anchor = NW)
+    #resize_multipliers(raw_canvas)
+    print(raw_canvas.winfo_width(), raw_canvas.winfo_height())
+    raw_canvas.config(scrollregion=[0, 0, int(500 * raw_canvas.winfo_width()), int((int(len(image_files) / 2) * (raw_height + raw_pad) + raw_pad) * raw_canvas.winfo_height())])
 
     # Raw Canvas Scrolling Function
     raw_canvas.yview_moveto(0)
 
     # Raw Canvas Scrollbar
     ybar = Scrollbar(raw_canvas, orient=VERTICAL)
-
-    #######
-        # Left off here
-    #######
-
-    ybar.place(relx=0, rely=0, height=530, anchor=NW)
+    ybar.place(relx=0, rely=0, relheight = 1, anchor=NW) #relheight=520/700 * height_mult,
     ybar.config(command=raw_canvas.yview)
     raw_canvas.config(yscrollcommand=ybar.set)
 
@@ -285,9 +289,10 @@ def open_grouping():
 
     # Grouped Canvas
     global grouped_canvas
-    grouped_canvas = Canvas(grouping, bd="3", bg="lightgrey", height=520, width=510)
-    grouped_canvas.place(relx=.975, rely=.2, anchor=NE)
-    grouped_canvas.config(scrollregion=[0, 0, 570, 1000])
+    grouped_canvas = Canvas(grouping, bd="3", bg="lightgrey")#, height=520 * height_mult, width=510 * width_mult)
+    grouped_canvas.place(relx=.975, rely=.2, relheight = 520/700, relwidth=510/1200, anchor=NE)
+    #resize_multipliers(grouped_canvas)
+    grouped_canvas.config(scrollregion=[0, 0, 570 * grouped_canvas.winfo_width(), 1000 * grouped_canvas.winfo_height()])
 
     # Grouped Canvas Scrolling Function
     grouped_canvas.yview_moveto(0)
@@ -305,12 +310,13 @@ def display_groups():
     # Old Aspect Ratio in px: 1200, 700
     # Multiply: Width x 1.6 - Height x 1.54
     # New Aspect Ratio in px: 1920, 1080
-    height_mult = int(grouping.winfo_height()/700)
-    width_mult = int(grouping.winfo_width()/1200)
-    height = 170 * height_mult
-    width = 264 * width_mult
-    height_pad = 5 * height_mult
-    width_pad = 5 * width_mult
+    #height_mult = int(grouping.winfo_height()/700) #move to params?
+    #width_mult = int(grouping.winfo_width()/1200)
+
+    height = int(170 * grouped_canvas.winfo_height())
+    width = int(264 * grouped_canvas.winfo_width())
+    height_pad = int(5 * grouped_canvas.winfo_height())
+    width_pad = int(5 * grouped_canvas.winfo_width())
 
     global grouped_images
     global groups
@@ -321,8 +327,9 @@ def display_groups():
     # set scrollbar length
     dynamic_width = 510
     for group in groups:
-         if(len(group) > 2):
-            dynamic_width = (width_pad + width + width_pad) * (len(group)-2) + 420
+        group_width = (width_pad + width + width_pad) * (len(group) - 2) + 420 * grouped_canvas.winfo_width()
+        if(group_width > dynamic_width):
+            dynamic_width = group_width
     grouped_canvas.config(scrollregion=[0, 0, dynamic_width, len(groups) * (height + height_pad + height_pad)])
 
     displayed = 0
@@ -364,19 +371,22 @@ def display_raws():
     global raw_height
     global raw_width
     global raw_pad
+    # global height_mult
+    # global width_mult
 
     raw_canvas.delete("all")
     fill_raw_images()
 
-    raw_canvas.config(scrollregion=[0, 0, 510, math.ceil(len(image_files) / 2)  * (raw_height + raw_pad) + raw_pad])
+    raw_canvas.config(scrollregion=[0, 0, 510 * raw_canvas.winfo_width(), (math.ceil(len(image_files) / 2)  * (raw_height + raw_pad) + raw_pad) * raw_canvas.winfo_height()])
 
     for i in range(len(image_files)):
-        raw_images[i] = raw_images[i].resize((raw_width, raw_height), Image.LANCZOS)
+        print(raw_canvas.winfo_width())
+        raw_images[i] = raw_images[i].resize((int( raw_width * 1920/1200 * raw_canvas.winfo_width()), int(raw_height * 1080/700 * raw_canvas.winfo_height())), Image.LANCZOS)
         raw_images[i] = ImageTk.PhotoImage(raw_images[i])
         label = Label(raw_canvas, image=raw_images[i], background="white")
         label.bind("<Button-1>", lambda event, index=i: on_image_click(index, event))
-        x_pos = ((raw_width + raw_pad) * (i % 2)) + 138
-        y_pos = ((raw_height + raw_pad) * (int(i / 2))) + 83
+        x_pos = int( (((raw_width + raw_pad) * (i % 2)) + 138) * 1920/1200 * raw_canvas.winfo_width() )
+        y_pos = int( (((raw_height + raw_pad) * (int(i / 2))) + 83) * 1080/700 * raw_canvas.winfo_height() )
         raw_canvas.create_window(x_pos, y_pos, window=label)
 
 
@@ -500,6 +510,14 @@ def open_landing():
 
     landing.mainloop()
 
+# def resize_multipliers(canvas):
+#     global height_mult
+#     global width_mult
+#     height_mult = canvas.winfo_height()/700
+#     width_mult = canvas.winfo_width()/1200
+#     print(canvas.winfo_height())
+#     print(height_mult)
+
 
 # ______________________________________________________________________________________________________________________
 # Phase 0: Global Variables
@@ -508,6 +526,8 @@ def open_landing():
 raw_height = 145
 raw_width = 235
 raw_pad = 10
+# height_mult = 1
+# width_mult = 1
 
 raw_images = list()
 grouped_images = list()
