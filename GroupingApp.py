@@ -105,7 +105,6 @@ def open_review():
         # Review Canvas
         review_canvas = Canvas(review, bd="3", bg="lightgrey", height=580, width=600)
         review_canvas.place(relx=.5, rely=.55, anchor=CENTER)
-        print(len(groups))
 
         # Dynamic Width
         dynamic_width = 600
@@ -273,7 +272,7 @@ def open_grouping():
     raw_canvas.place(relx=.02, rely=.2, relheight=520/700, relwidth = 510/1200, anchor = NW)
     #resize_multipliers(raw_canvas)
     print(raw_canvas.winfo_width(), raw_canvas.winfo_height())
-    raw_canvas.config(scrollregion=[0, 0, int(500 * raw_canvas.winfo_width()), int((int(len(image_files) / 2) * (raw_height + raw_pad) + raw_pad) * raw_canvas.winfo_height())])
+    raw_canvas.config(scrollregion=[0, 0, 500, int(len(image_files) / 2) * (raw_height + raw_pad) + raw_pad])
 
     # Raw Canvas Scrolling Function
     raw_canvas.yview_moveto(0)
@@ -292,7 +291,7 @@ def open_grouping():
     grouped_canvas = Canvas(grouping, bd="3", bg="lightgrey")#, height=520 * height_mult, width=510 * width_mult)
     grouped_canvas.place(relx=.975, rely=.2, relheight = 520/700, relwidth=510/1200, anchor=NE)
     #resize_multipliers(grouped_canvas)
-    grouped_canvas.config(scrollregion=[0, 0, 570 * grouped_canvas.winfo_width(), 1000 * grouped_canvas.winfo_height()])
+    grouped_canvas.config(scrollregion=[0, 0, 570, 1000])
 
     # Grouped Canvas Scrolling Function
     grouped_canvas.yview_moveto(0)
@@ -313,10 +312,10 @@ def display_groups():
     #height_mult = int(grouping.winfo_height()/700) #move to params?
     #width_mult = int(grouping.winfo_width()/1200)
 
-    height = int(170 * grouped_canvas.winfo_height())
-    width = int(264 * grouped_canvas.winfo_width())
-    height_pad = int(5 * grouped_canvas.winfo_height())
-    width_pad = int(5 * grouped_canvas.winfo_width())
+    height = 170
+    width = 264
+    height_pad = 5
+    width_pad = 5
 
     global grouped_images
     global groups
@@ -327,7 +326,7 @@ def display_groups():
     # set scrollbar length
     dynamic_width = 510
     for group in groups:
-        group_width = (width_pad + width + width_pad) * (len(group) - 2) + 420 * grouped_canvas.winfo_width()
+        group_width = (width_pad + width + width_pad) * (len(group) - 2) + 420
         if(group_width > dynamic_width):
             dynamic_width = group_width
     grouped_canvas.config(scrollregion=[0, 0, dynamic_width, len(groups) * (height + height_pad + height_pad)])
@@ -346,7 +345,7 @@ def display_groups():
         group_images = grouped_images[i]
 
         for j in range(len(groups[i])):
-            group_images[j] = group_images[j].resize((width, height), Image.LANCZOS)
+            #group_images[j] = group_images[j].resize((width, height), Image.LANCZOS)
             group_images[j] = ImageTk.PhotoImage(group_images[j])
             label = Label(grouped_canvas, image=group_images[j])
             x_pos = j * (width + width_pad * 2) + int(width / 2) + width_pad + 70
@@ -371,23 +370,23 @@ def display_raws():
     global raw_height
     global raw_width
     global raw_pad
-    # global height_mult
-    # global width_mult
 
     raw_canvas.delete("all")
     fill_raw_images()
 
-    raw_canvas.config(scrollregion=[0, 0, 510 * raw_canvas.winfo_width(), (math.ceil(len(image_files) / 2)  * (raw_height + raw_pad) + raw_pad) * raw_canvas.winfo_height()])
+    raw_canvas.config(scrollregion=[0, 0, 510, (math.ceil(len(image_files) / 2)  * (raw_height + raw_pad) + raw_pad)])
 
     for i in range(len(image_files)):
-        print(raw_canvas.winfo_width())
-        raw_images[i] = raw_images[i].resize((int( raw_width * 1920/1200 * raw_canvas.winfo_width()), int(raw_height * 1080/700 * raw_canvas.winfo_height())), Image.LANCZOS)
+        print(raw_canvas.winfo_width(), raw_canvas.winfo_height())
+        raw_images[i] = raw_images[i].resize((raw_width, raw_height), Image.LANCZOS)
         raw_images[i] = ImageTk.PhotoImage(raw_images[i])
         label = Label(raw_canvas, image=raw_images[i], background="white")
         label.bind("<Button-1>", lambda event, index=i: on_image_click(index, event))
-        x_pos = int( (((raw_width + raw_pad) * (i % 2)) + 138) * 1920/1200 * raw_canvas.winfo_width() )
-        y_pos = int( (((raw_height + raw_pad) * (int(i / 2))) + 83) * 1080/700 * raw_canvas.winfo_height() )
+        x_pos = int( (((raw_width + raw_pad) * (i % 2)) + raw_width/2 + raw_pad + 10))#138
+        y_pos = int( (((raw_height + raw_pad) * (int(i / 2))) + raw_height/2 + raw_pad) )#83
         raw_canvas.create_window(x_pos, y_pos, window=label)
+
+    print("Raws Displayed")
 
 
 # updates grouped image file array from grouped file path array
@@ -474,8 +473,7 @@ def select_folder(page):
         # hide folder
         os.system('attrib +h "' + folder_path + '"')
 
-        grouped_images = []
-        groups = []
+        clear_global_lists()
 
         image_files = [f for f in os.listdir(folder_path) if f.endswith(".dng")]
         make_groups()
@@ -523,17 +521,29 @@ def open_landing():
 # Phase 0: Global Variables
 # ______________________________________________________________________________________________________________________
 
-raw_height = 145
-raw_width = 235
-raw_pad = 10
+def clear_global_lists():
+    global raw_images
+    global grouped_images
+    global image_files
+    global selected
+    global groups
+    raw_images = list()
+    grouped_images = list()
+    image_files = list()
+    selected = list()
+    groups = list()
+
+raw_height = 181 #145
+raw_width = 294 #235
+raw_pad = 13
 # height_mult = 1
 # width_mult = 1
 
-raw_images = list()
-grouped_images = list()
-image_files = list()
-selected = list()
-groups = list()
+raw_images = list() # list of raw image files
+grouped_images = list() # 2d list of grouped image files
+image_files = list() # list of raw image file names
+selected = list() # list of selected raws
+groups = list() # 2d list of grouped file names
 folder_path = ""
 
 atexit.register(on_exit)
