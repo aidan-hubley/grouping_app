@@ -98,22 +98,23 @@ def open_review():
         count_label.place(relx=.5, rely=0.06, anchor=CENTER)
 
         # Display Groups
-        review_height = 110
-        review_width = 165
-        review_pad = 5
+        review_height = int(110*1.6)
+        review_width = int(165*1.6)
+        review_pad = int(5*1.6)
 
         # Review Canvas
-        review_canvas = Canvas(review, bd="3", bg="lightgrey", height=580, width=600)
-        review_canvas.place(relx=.5, rely=.55, anchor=CENTER)
+        review_canvas = Canvas(review, bd="3", bg="lightgrey")
+        review_canvas.place(relx=.5, rely=.55, anchor=CENTER, relheight=580/700, relwidth=0.5)
 
         # Dynamic Width
-        dynamic_width = 600
+        dynamic_width = 930
 
         for group in groups:
-            if len(group) > 3:
-                dynamic_width = ((review_pad + review_width + review_pad) * (len(group) - 3) + 600)
+            group_width = (review_pad + review_width + review_pad) * len(group) + 75
+            if group_width > dynamic_width:
+                dynamic_width = group_width
 
-        review_canvas.config(scrollregion=[0, 0, dynamic_width, len(groups) * (review_height + review_pad + review_pad)])
+        review_canvas.config(scrollregion=[0, 0, dynamic_width, len(groups) * (review_height + review_pad + review_pad) + 12])
 
         # Review Canvas Scrolling Function
         review_canvas.yview_moveto(0)
@@ -143,12 +144,12 @@ def open_review():
 
         # Review Canvas Scrollbar
         ybar = Scrollbar(review_canvas, orient=VERTICAL)
-        ybar.place(relx=0, rely=0, height=590, anchor=NW)
+        ybar.place(relx=0, rely=0, relheight=1, anchor=NW)
         ybar.config(command=review_canvas.yview)
         review_canvas.config(yscrollcommand=ybar.set)
 
         xbar = Scrollbar(review_canvas, orient=HORIZONTAL)
-        xbar.place(relx=1, rely=1, width=600, anchor=SE)
+        xbar.place(relx=1, rely=1, relwidth=1, anchor=SE)
         xbar.config(command=review_canvas.xview)
         review_canvas.config(xscrollcommand=xbar.set)
 
@@ -250,29 +251,20 @@ def open_grouping():
     grouped_label = Label(grouping, text="Grouped Photos", font = (20))
     grouped_label.place(relx=.8, rely=.1, anchor=NE)
 
-    global raw_height
-    global raw_width
-    global raw_pad
-    # global height_mult
-    # global width_mult
+    # global raw_height
+    # global raw_width
+    # global raw_pad
 
     # Old Aspect Ratio in px: 1200, 700
     # New Aspect Ratio in px: 1920, 1080
-
-    # height_mult = grouping.winfo_height()/700
-    # width_mult = grouping.winfo_width()/1200
-
-    #print(grouping.winfo_height(), height_mult)
-
 
     # Raw Canvas
     global raw_canvas
     raw_canvas = Canvas(grouping, bd="3", bg="lightgrey")#, height=520 * height_mult, width=510 * height_mult)
 
     raw_canvas.place(relx=.02, rely=.2, relheight=520/700, relwidth = 510/1200, anchor = NW)
-    #resize_multipliers(raw_canvas)
-    print(raw_canvas.winfo_width(), raw_canvas.winfo_height())
-    raw_canvas.config(scrollregion=[0, 0, 500, int(len(image_files) / 2) * (raw_height + raw_pad) + raw_pad])
+    # print(raw_canvas.winfo_width(), raw_canvas.winfo_height())
+    # raw_canvas.config(scrollregion=[0, 0, 500, int(len(image_files) / 2) * (raw_height + raw_pad) + raw_pad])
 
     # Raw Canvas Scrolling Function
     raw_canvas.yview_moveto(0)
@@ -288,9 +280,8 @@ def open_grouping():
 
     # Grouped Canvas
     global grouped_canvas
-    grouped_canvas = Canvas(grouping, bd="3", bg="lightgrey")#, height=520 * height_mult, width=510 * width_mult)
+    grouped_canvas = Canvas(grouping, bd="3", bg="lightgrey")
     grouped_canvas.place(relx=.975, rely=.2, relheight = 520/700, relwidth=510/1200, anchor=NE)
-    #resize_multipliers(grouped_canvas)
     grouped_canvas.config(scrollregion=[0, 0, 570, 1000])
 
     # Grouped Canvas Scrolling Function
@@ -309,8 +300,6 @@ def display_groups():
     # Old Aspect Ratio in px: 1200, 700
     # Multiply: Width x 1.6 - Height x 1.54
     # New Aspect Ratio in px: 1920, 1080
-    #height_mult = int(grouping.winfo_height()/700) #move to params?
-    #width_mult = int(grouping.winfo_width()/1200)
 
     height = 170
     width = 264
@@ -324,12 +313,12 @@ def display_groups():
     fill_grouped_images()
 
     # set scrollbar length
-    dynamic_width = 510
+    dynamic_width = 647
     for group in groups:
-        group_width = (width_pad + width + width_pad) * (len(group) - 2) + 420
+        group_width = (width_pad + width + width_pad) * (len(group) - 2) + 647
         if(group_width > dynamic_width):
             dynamic_width = group_width
-    grouped_canvas.config(scrollregion=[0, 0, dynamic_width, len(groups) * (height + height_pad + height_pad)])
+    grouped_canvas.config(scrollregion=[0, 0, dynamic_width, len(groups) * (height + height_pad + height_pad) + 16])
 
     displayed = 0
 
@@ -356,12 +345,12 @@ def display_groups():
 
     # Grouped Canvas Scrollbar
     ybar = Scrollbar(grouped_canvas, orient=VERTICAL)
-    ybar.place(relx=0, rely=0, height=530, anchor=NW)
+    ybar.place(relx=0, rely=0, relheight=1, anchor=NW)
     ybar.config(command=grouped_canvas.yview)
     grouped_canvas.config(yscrollcommand=ybar.set)
 
     xbar = Scrollbar(grouped_canvas, orient=HORIZONTAL)
-    xbar.place(relx=1, rely=1, width=505, anchor=SE)
+    xbar.place(relx=1, rely=1, relwidth=1, anchor=SE)
     xbar.config(command=grouped_canvas.xview)
     grouped_canvas.config(xscrollcommand=xbar.set)
 
@@ -386,7 +375,7 @@ def display_raws():
         y_pos = int( (((raw_height + raw_pad) * (int(i / 2))) + raw_height/2 + raw_pad) )#83
         raw_canvas.create_window(x_pos, y_pos, window=label)
 
-    print("Raws Displayed")
+    # print("Raws Displayed")
 
 
 # updates grouped image file array from grouped file path array
@@ -508,14 +497,6 @@ def open_landing():
 
     landing.mainloop()
 
-# def resize_multipliers(canvas):
-#     global height_mult
-#     global width_mult
-#     height_mult = canvas.winfo_height()/700
-#     width_mult = canvas.winfo_width()/1200
-#     print(canvas.winfo_height())
-#     print(height_mult)
-
 
 # ______________________________________________________________________________________________________________________
 # Phase 0: Global Variables
@@ -533,11 +514,9 @@ def clear_global_lists():
     selected = list()
     groups = list()
 
-raw_height = 181 #145
-raw_width = 294 #235
-raw_pad = 13
-# height_mult = 1
-# width_mult = 1
+raw_height = 223 #145
+raw_width = 376 #235
+raw_pad = 16
 
 raw_images = list() # list of raw image files
 grouped_images = list() # 2d list of grouped image files
