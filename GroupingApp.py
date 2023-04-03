@@ -15,7 +15,7 @@ import math
 def rename_file(file_name, group_num):
     grouped = False
     ungrouped_file_name = file_name
-    if file_name.endswith('.dng'):
+    if file_name.endswith((".DNG", ".dng")):
 
         if file_name.find('-') != -1:
             grouped = True
@@ -464,7 +464,7 @@ def select_folder(page):
 
         clear_global_lists()
 
-        image_files = [f for f in os.listdir(folder_path) if f.endswith(".dng")]
+        image_files = [f for f in os.listdir(folder_path) if f.endswith((".DNG", ".dng"))]
         make_groups()
 
         # print(folder_path, image_files) # debug
