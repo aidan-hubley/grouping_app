@@ -366,7 +366,7 @@ def display_raws():
     raw_canvas.config(scrollregion=[0, 0, 510, (math.ceil(len(image_files) / 2)  * (raw_height + raw_pad) + raw_pad)])
 
     for i in range(len(image_files)):
-        print(raw_canvas.winfo_width(), raw_canvas.winfo_height())
+        #print(raw_canvas.winfo_width(), raw_canvas.winfo_height())
         raw_images[i] = raw_images[i].resize((raw_width, raw_height), Image.LANCZOS)
         raw_images[i] = ImageTk.PhotoImage(raw_images[i])
         label = Label(raw_canvas, image=raw_images[i], background="white")
