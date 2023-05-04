@@ -7,12 +7,12 @@ _Example:_
 
 | Before Grouping | After Grouping |
 |-----------------|----------------|
-| image0          | image0-1       |
-| image1          | image1-1       |
-| image2          | image2-2       |
-| image3          | image3-2       |
-| image4          | image4-3       |
-| image5          | image5-4       |
+| image0          | 1-image0       |
+| image1          | 1-image1       |
+| image2          | 2-image2       |
+| image3          | 2-image3       |
+| image4          | 3-image4       |
+| image5          | 4-image5     |
 
 This should allow for easy identification of grouping when editing images
 
