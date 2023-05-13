@@ -1,11 +1,14 @@
+from datetime import datetime
 import os
-from tkinter import filedialog
-from tkinter import *
+# from tkinter import *
+import tkinter as tk
+from tkinter import filedialog, Label, Button, Canvas, Tk
 from tkinter.ttk import *
 from PIL import Image, ImageTk
 import webbrowser
 import atexit
 import math
+import pandas as pd
 
 # ______________________________________________________________________________________________________________________
 # Phase 4: Final Page
@@ -16,7 +19,6 @@ def rename_file(file_name, group_num):
     grouped = False
     ungrouped_file_name = file_name
     if file_name.endswith((".DNG", ".dng")):
-
         if file_name.find('-') != -1:
             grouped = True
             for i in range(0, file_name.find('-')):
@@ -34,6 +36,7 @@ def rename_file(file_name, group_num):
 
 # opens the final confirmation page
 def open_final():
+    global folder_path
     # Unhide the working folder
     os.system('attrib -h "' + folder_path + '"')
 
@@ -53,14 +56,17 @@ def open_final():
     # final.maxsize(250, 250)
     final.minsize(250, 250)
 
+    # global start_time
+    log(os.getlogin(), start_time, datetime.now(), folder_path)
+
     saved = Label(final, text="Grouped Saved!", font=(10))
-    saved.place(relx=0.5, rely=0.3, anchor=CENTER)
+    saved.place(relx=0.5, rely=0.3, anchor=tk.CENTER)
 
     # Buttons
     select = Button(final, text="Select New Folder", command=lambda: select_folder(final))
-    select.place(relx=0.5, rely=0.5, anchor=CENTER)
+    select.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
     close = Button(final, text="Close", command=final.destroy)
-    close.place(relx=0.5, rely=0.7, anchor=CENTER)
+    close.place(relx=0.5, rely=0.7, anchor=tk.CENTER)
 
     final.mainloop()
 
@@ -89,13 +95,13 @@ def open_review():
 
         # Buttons + Label
         reselect = Button(review, text="< Reselect Groups", command=grouping_page_rerun)
-        reselect.place(relx=.05, rely=.04, anchor=NW)
+        reselect.place(relx=.05, rely=.04, anchor=tk.NW)
         save_groups = Button(review, text="Save Groups >", command=open_final)
-        save_groups.place(relx=.95, rely=.04, anchor=NE)
+        save_groups.place(relx=.95, rely=.04, anchor=tk.NE)
         grouped_label = Label(review, text="Review Groups", font=20)
-        grouped_label.place(relx=.5, rely=.1, anchor=CENTER)
+        grouped_label.place(relx=.5, rely=.1, anchor=tk.CENTER)
         count_label = Label(review, text=f"Expected Final Count: {len(groups)}")
-        count_label.place(relx=.5, rely=0.06, anchor=CENTER)
+        count_label.place(relx=.5, rely=0.06, anchor=tk.CENTER)
 
         # Display Groups
         review_height = int(110*1.6)
@@ -104,7 +110,7 @@ def open_review():
 
         # Review Canvas
         review_canvas = Canvas(review, bd="3", bg="lightgrey")
-        review_canvas.place(relx=.5, rely=.55, anchor=CENTER, relheight=580/700, relwidth=0.5)
+        review_canvas.place(relx=.5, rely=.55, anchor=tk.CENTER, relheight=580/700, relwidth=0.5)
 
         # Dynamic Width
         dynamic_width = 930
@@ -143,13 +149,13 @@ def open_review():
         # print(str(len(groups)) + " group(s) displayed to be reviewed")
 
         # Review Canvas Scrollbar
-        ybar = Scrollbar(review_canvas, orient=VERTICAL)
-        ybar.place(relx=0, rely=0, relheight=1, anchor=NW)
+        ybar = Scrollbar(review_canvas, orient=tk.VERTICAL)
+        ybar.place(relx=0, rely=0, relheight=1, anchor=tk.NW)
         ybar.config(command=review_canvas.yview)
         review_canvas.config(yscrollcommand=ybar.set)
 
-        xbar = Scrollbar(review_canvas, orient=HORIZONTAL)
-        xbar.place(relx=1, rely=1, relwidth=1, anchor=SE)
+        xbar = Scrollbar(review_canvas, orient=tk.HORIZONTAL)
+        xbar.place(relx=1, rely=1, relwidth=1, anchor=tk.SE)
         xbar.config(command=review_canvas.xview)
         review_canvas.config(xscrollcommand=xbar.set)
 
@@ -224,36 +230,33 @@ def add_to_group(image_name, group_num):
 # opens grouping page
 def open_grouping():
     global grouping
+    global start_time
     grouping = Tk()
     grouping.title("Grouping Page")
     # grouping.geometry("1200x700")
     # grouping.maxsize(1200, 700)
     # grouping.minsize(1200, 700)
-
     grouping.state('zoomed')
-
     grouping.bind('<Return>', create_group_event)
     #grouping.bind('<Configure>', on_resize)
 
+    start_time = datetime.now()
+
     # Buttons
     reselect = Button(grouping, text="< Reselect Folder", command=lambda: select_folder(grouping))
-    reselect.place(relx=.05, rely=.04, anchor=NW)
+    reselect.place(relx=.05, rely=.04, anchor=tk.NW)
     group_photos = Button(grouping, text="Group Photos", command=create_group)
-    group_photos.place(relx=.5, rely=.1, anchor=N)
+    group_photos.place(relx=.5, rely=.1, anchor=tk.N)
     ungroupall = Button(grouping, text="Ungroup All", command=ungroup_all)
-    ungroupall.place(relx=.5, rely=.9, anchor=N)
+    ungroupall.place(relx=.5, rely=.9, anchor=tk.N)
     review_groups = Button(grouping, text="Review Groups >", command=open_review)
-    review_groups.place(relx=.95, rely=.04, anchor=NE)
+    review_groups.place(relx=.95, rely=.04, anchor=tk.NE)
 
     # Text
     raw_label = Label(grouping, text="Raw Photos", font = (20))
-    raw_label.place(relx=.2, rely=.1, anchor=NW)
+    raw_label.place(relx=.2, rely=.1, anchor=tk.NW)
     grouped_label = Label(grouping, text="Grouped Photos", font = (20))
-    grouped_label.place(relx=.8, rely=.1, anchor=NE)
-
-    # global raw_height
-    # global raw_width
-    # global raw_pad
+    grouped_label.place(relx=.8, rely=.1, anchor=tk.NE)
 
     # Old Aspect Ratio in px: 1200, 700
     # New Aspect Ratio in px: 1920, 1080
@@ -262,16 +265,14 @@ def open_grouping():
     global raw_canvas
     raw_canvas = Canvas(grouping, bd="3", bg="lightgrey")#, height=520 * height_mult, width=510 * height_mult)
 
-    raw_canvas.place(relx=.02, rely=.2, relheight=520/700, relwidth = 510/1200, anchor = NW)
-    # print(raw_canvas.winfo_width(), raw_canvas.winfo_height())
-    # raw_canvas.config(scrollregion=[0, 0, 500, int(len(image_files) / 2) * (raw_height + raw_pad) + raw_pad])
+    raw_canvas.place(relx=.02, rely=.2, relheight=520/700, relwidth = 510/1200, anchor = tk.NW)
 
     # Raw Canvas Scrolling Function
     raw_canvas.yview_moveto(0)
 
     # Raw Canvas Scrollbar
-    ybar = Scrollbar(raw_canvas, orient=VERTICAL)
-    ybar.place(relx=0, rely=0, relheight = 1, anchor=NW) #relheight=520/700 * height_mult,
+    ybar = Scrollbar(raw_canvas, orient=tk.VERTICAL)
+    ybar.place(relx=0, rely=0, relheight = 1, anchor=tk.NW)
     ybar.config(command=raw_canvas.yview)
     raw_canvas.config(yscrollcommand=ybar.set)
 
@@ -281,7 +282,7 @@ def open_grouping():
     # Grouped Canvas
     global grouped_canvas
     grouped_canvas = Canvas(grouping, bd="3", bg="lightgrey")
-    grouped_canvas.place(relx=.975, rely=.2, relheight = 520/700, relwidth=510/1200, anchor=NE)
+    grouped_canvas.place(relx=.975, rely=.2, relheight = 520/700, relwidth=510/1200, anchor=tk.NE)
     grouped_canvas.config(scrollregion=[0, 0, 570, 1000])
 
     # Grouped Canvas Scrolling Function
@@ -344,13 +345,13 @@ def display_groups():
     print(str(displayed) + " group(s) displayed")
 
     # Grouped Canvas Scrollbar
-    ybar = Scrollbar(grouped_canvas, orient=VERTICAL)
-    ybar.place(relx=0, rely=0, relheight=1, anchor=NW)
+    ybar = Scrollbar(grouped_canvas, orient=tk.VERTICAL)
+    ybar.place(relx=0, rely=0, relheight=1, anchor=tk.NW)
     ybar.config(command=grouped_canvas.yview)
     grouped_canvas.config(yscrollcommand=ybar.set)
 
-    xbar = Scrollbar(grouped_canvas, orient=HORIZONTAL)
-    xbar.place(relx=1, rely=1, relwidth=1, anchor=SE)
+    xbar = Scrollbar(grouped_canvas, orient=tk.HORIZONTAL)
+    xbar.place(relx=1, rely=1, relwidth=1, anchor=tk.SE)
     xbar.config(command=grouped_canvas.xview)
     grouped_canvas.config(xscrollcommand=xbar.set)
 
@@ -489,11 +490,11 @@ def open_landing():
     landing.minsize(250, 250)
 
     hi = Label(landing, text="Welcome", font=(10))
-    hi.place(relx=0.5, rely=0.3, anchor=CENTER)
+    hi.place(relx=0.5, rely=0.3, anchor=tk.CENTER)
     select = Button(landing, text="Select Folder", command=lambda: select_folder(landing))
-    select.place(relx=0.5, rely=0.6, anchor=CENTER)
+    select.place(relx=0.5, rely=0.6, anchor=tk.CENTER)
     readme = Button(landing, text="Info", command=readmelink)
-    readme.place(relx=0.5, rely=0.7, anchor=CENTER)
+    readme.place(relx=0.5, rely=0.7, anchor=tk.CENTER)
 
     landing.mainloop()
 
@@ -513,6 +514,19 @@ def clear_global_lists():
     image_files = list()
     selected = list()
     groups = list()
+
+def log(name, start_time_param, end_time_param, file_folder):
+    columns = ['Name', 'Time Opened', 'Time Grouped', "File Folder"]
+
+    # Create DataFrame from multiple lists
+    df = pd.DataFrame(list(zip([name], [start_time_param], [end_time_param], [file_folder])), columns=columns)
+
+    # Append DataFrame to existing Excel file
+    try:
+        with pd.ExcelWriter('Grouping_Log.xlsx', mode='a') as writer:
+            df.to_excel(writer, sheet_name='Grouping Log')
+    except FileNotFoundError:
+        df.to_excel('Grouping_Log.xlsx', sheet_name='Grouping Log')
 
 raw_height = 223 #145
 raw_width = 376 #235
